@@ -1,2 +1,2 @@
 # rcm
-R package for implemention of random covariance models
+Implemention of Random Covariance Models
