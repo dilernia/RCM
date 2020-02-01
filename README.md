@@ -14,8 +14,8 @@ Zhang, L., DiLernia, A., Quevedo, K., Camchong, J., Lim, K., & Pan, W. (2019). A
 
 Install the package from GitHub with the following code:
 
-\# Install devtools package
+\# Install devtools package \n
 install.packages("devtools")
 
-\# Install rcm package from GitHub
+\# Install rcm package from GitHub \n
 devtools::install_github("dilernia/rcm").
