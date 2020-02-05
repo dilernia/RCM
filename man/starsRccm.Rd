@@ -33,7 +33,7 @@ regularization selection (stARS) method for tuning parameter
 selection. Methods available to implement include the
 fused graphical lasso (\link[JGL:JGL]{FGL}), group graphical lasso (\link[JGL:JGL]{GGL}),
 graphical lasso (\link[glasso:glasso]{GLasso}), random covariance clustering
-model (\link{rccm}), and the random covariance model (\link{randCov}).
+model (\link[rcm:rccm]{RCCM}), and the random covariance model (\link[rcm:randCov]{RCM}).
 }
 \examples{
 # Generate data with 2 clusters with 10 subjects in each group,

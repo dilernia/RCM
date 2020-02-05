@@ -5,15 +5,15 @@
     "dirty" : false,
     "encoding" : "UTF-8",
     "folds" : "53|63|251|0|\n",
-    "hash" : "3819660047",
+    "hash" : "859617622",
     "id" : "C88E26C4",
-    "lastKnownWriteTime" : 1580931898,
-    "last_content_update" : 1580931898591,
+    "lastKnownWriteTime" : 1580937004,
+    "last_content_update" : 1580937004560,
     "path" : "C:/Users/Owner/Dropbox/Minnesota/fMRI Research/rcm/R/starsRccm.R",
     "project_path" : "R/starsRccm.R",
     "properties" : {
-        "cursorPosition" : "6,39",
-        "scrollLine" : "0"
+        "cursorPosition" : "34,0",
+        "scrollLine" : "8"
     },
     "read_only" : false,
     "read_only_alternatives" : [

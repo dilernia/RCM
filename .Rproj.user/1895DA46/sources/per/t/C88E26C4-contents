@@ -5,7 +5,7 @@
 #' selection. Methods available to implement include the
 #' fused graphical lasso (\link[JGL:JGL]{FGL}), group graphical lasso (\link[JGL:JGL]{GGL}),
 #' graphical lasso (\link[glasso:glasso]{GLasso}), random covariance clustering
-#' model (\link{rccm}), and the random covariance model (\link{randCov}).
+#' model (\link[rcm:rccm]{RCCM}), and the random covariance model (\link[rcm:randCov]{RCM}).
 #'
 #' @param datf List of \eqn{K} data sets each of dimension \eqn{n_k} x \eqn{p}.
 #' @param lambs A data frame of candidate tuning parameter values with three columns: lambda1, lambda2, and lambda3.

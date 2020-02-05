@@ -44,6 +44,10 @@ adj <- function(mat, thresh = 0.001) {
 #' @param z Integer vector of cluster memberships.
 #' @return An adjacency matrix containing 1's and 0's.
 #'
+#' @examples
+#' # Calculate adjacency matrix for clustering
+#' zToA(c(rep(1, 2), rep(2, 2), rep(3, 2)))
+#'
 #' @export
 zToA <- function(z) {
   K <- length(z)
@@ -82,6 +86,19 @@ return((sum((Ahat - A0) == 2) + sum((Ahat - A0) == 0)) / choose(n = length(x), 2
 #' @param ws \eqn{nclusts} x \eqn{K} matrix of estimated cluster weights for each subject.
 #' @return Numeric vector of length 2 containing the modified AIC and BIC values.
 #'
+#' @examples
+#' # Generate data
+#' set.seed(1994)
+#' myData <- rccSim(G = 2, clustSize = 10, p = 10, n = 100, overlap = 0.50, rho = 0.10)
+#'
+#' # Analyze with RCCM
+#' resultRccm <- rccm(x = myData$simDat, lambda1 = 20,
+#' lambda2 = 325, lambda3 = 0.01, nclusts = 2)
+#'
+#' # Calculate modified AIC and BIC
+#' aicbicm(x = myData$simDat, omegaks = resultRccm$Omegas,
+#' omega0s = resultRccm$Omega0, lambda2 = 325, ws = resultRccm$weights)
+#'
 #' @export
 aicbicm <- function(x, omegaks, omega0s, lambda2, ws) {
 
@@ -95,16 +112,16 @@ aicbicm <- function(x, omegaks, omega0s, lambda2, ws) {
   dfgs <- sapply(X = 1:G, FUN = function(x) {
     sum(adj(omega0s[, , x])[lower.tri(omega0s[, , x])])})
 
-  Sk <- lapply(X = x, FUN = cov)
+  Sk <- lapply(X = 1:K, FUN = function(k){cov(x[[k]])*nks[k]})
 
   nll <- sapply(X = 1:K, FUN = function(x) {
-    sum(diag(Sk[[x]] %*% omegaks[, , x])) - log(det(omegaks[, , x])) - 2 * sum(sapply(1:G, FUN = function(g) {
+    0.50*sum(diag(Sk[[x]] %*% omegaks[, , x])) - 0.50*log(det(omegaks[, , x])) - 2 * sum(sapply(1:G, FUN = function(g) {
       ws[g, x] * (log(pigs[g] + dwishart(x = omegaks[, , x], M = omega0s[, , g], nu = lambda2, logged = TRUE)))
       }))
   }) * nks
   bicm <- sum(nll) + sum(log(nks) * dfks) + sum(log(K * pigs) * dfgs)
   aicm <- sum(nll) + sum(2 * dfks) + sum(2 * dfgs)
-  return(c(aicm, bicm))
+  return(setNames(c(aicm, bicm), c("AICm", "BICm")))
 }
 
 #' AIC and BIC
@@ -114,6 +131,18 @@ aicbicm <- function(x, omegaks, omega0s, lambda2, ws) {
 #' @param x List of \eqn{K} data matrices each of dimension \eqn{n_k} x \eqn{p}.
 #' @param omegaks \eqn{p} x \eqn{p} x \eqn{K} array of \eqn{K} number of estimated subject-level precision matrices.
 #' @return Numeric vector of length 2 containing the AIC and BIC values.
+#'
+#' @examples
+#' # Generate data
+#' set.seed(1994)
+#' myData <- rccSim(G = 2, clustSize = 10, p = 10, n = 100, overlap = 0.50, rho = 0.10)
+#'
+#' # Analyze with RCCM
+#' resultRccm <- rccm(x = myData$simDat, lambda1 = 20,
+#' lambda2 = 325, lambda3 = 0.01, nclusts = 2)
+#'
+#' # Calculate AIC and BIC
+#' aicbic(x = myData$simDat, omegaks = resultRccm$Omegas)
 #'
 #' @export
 aicbic <- function(x, omegaks) {
@@ -125,12 +154,12 @@ aicbic <- function(x, omegaks) {
     sum(adj(omegaks[, , x])[lower.tri(omegaks[, , x])])
     })
 
-  Sk <- lapply(X = x, FUN = cov)
+  Sk <- lapply(X = 1:K, FUN = function(k){cov(x[[k]])*nks[k]})
 
   nll <- sapply(X = 1:K, FUN = function(x) {
-    sum(diag(Sk[[x]] %*% omegaks[, , x])) - log(det(omegaks[, , x]))
+    0.50*sum(diag(Sk[[x]] %*% omegaks[, , x])) - 0.50*log(det(omegaks[, , x]))
   }) * nks
   bic <- sum(nll) + sum(log(nks) * dfks)
   aic <- sum(nll) + sum(2 * dfks)
-  return(c(aic, bic))
+  return(setNames(c(aic, bic), c("AIC", "BIC")))
 }
