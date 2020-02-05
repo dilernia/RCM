@@ -1,0 +1,23 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1580930294182.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "3982855853",
+    "id" : "502879C0",
+    "lastKnownWriteTime" : 1580929059,
+    "last_content_update" : 1580929059,
+    "path" : "C:/Users/Owner/Dropbox/Minnesota/fMRI Research/rcm/NAMESPACE",
+    "project_path" : "NAMESPACE",
+    "properties" : {
+    },
+    "read_only" : true,
+    "read_only_alternatives" : [
+    ],
+    "relative_order" : 1,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_namespace"
+}

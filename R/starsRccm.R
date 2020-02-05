@@ -102,6 +102,7 @@ starsRccm <- function(datf, lambs, method = "RCCM", G = 2, N = 10,
 
     # Running rccm method for bootstrap sample for each lambda combination in parallel if requested
     if (ncores > 1) {
+      `%dopar%` <- foreach::`%dopar%`
       cl <- parallel::makeCluster(ncores) # creates a cluster with <ncore> cores
       doParallel::registerDoParallel(cl) # register the cluster
       nets <- foreach::foreach(t = 1:nrow(lambs),
