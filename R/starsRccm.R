@@ -21,16 +21,16 @@
 #' Andrew DiLernia
 #'
 #' @examples
-#' # Generate data with 2 clusters with 2 and 3 subjects respectively,
-#' # 5 variables for each subject, 100 observations for each variable for each subject,
+#' # Generate data with 2 clusters with 10 subjects in each group,
+#' # 10 variables for each subject, 100 observations for each variable for each subject,
 #' # the groups sharing about 50% of network connections, and 10% of differential connections
 #' # within each group
 #' set.seed(1994)
 #' myData <- rccSim(G = 2, clustSize = 10, p = 10, n = 100, overlap = 0.50, rho = 0.10)
 #'
 #' # Find optimal tuning parameter set using modified stARS
-#' optTune <- starsRccm(datf = myData$simDat, lambs = expand.grid(lambda1 = c(20, 25, 30), lambda2 = c(300, 325), lambda3 = 0.01),
-#' method = "RCCM", G = 2)
+#' optTune <- starsRccm(datf = myData$simDat, lambs = expand.grid(lambda1 = c(20, 25, 30),
+#' lambda2 = c(300, 325), lambda3 = 0.01), method = "RCCM", G = 2)
 #'
 #' # Analyze with RCCM using optimally selected tuning parameters
 #' resultRccm <- rccm(x = myData$simDat, lambda1 = optTune$lambda1[1],
@@ -105,31 +105,34 @@ starsRccm <- function(datf, lambs, method = "RCCM", G = 2, N = 10,
       cl <- parallel::makeCluster(ncores) # creates a cluster with <ncore> cores
       doParallel::registerDoParallel(cl) # register the cluster
       nets <- foreach::foreach(t = 1:nrow(lambs),
-                               .export = c("method", "G", "K", "adj", "lambs", "z0s")) %dopar% {
+                               .export = c("method", "subDats", "G", "K", "lambs", "z0s")) %dopar% {
                                  listRes <- NULL
-                                 try({
+                                 tryCatch({
                                    if (method == "RCCM") {
                                      arrayRes <- rccm(subDats, lambda1 = lambs[t, "lambda1"], lambda2 = lambs[t, "lambda2"],
                                                       lambda3 = lambs[t, "lambda3"], nclusts = G, z0s = z0s)$Omegas
                                      listRes <- lapply(lapply(1:K, FUN = function(k) {
                                        arrayRes[, , k]}), FUN = adj)
-                                   } else if (method == "GLasso") {
+                                                                        } else if (method == "GLasso") {
                                      listRes <- lapply(subDats, FUN = function(x) {
                                        adj(glasso::glasso(cov(x), rho = lambs[t, "lambda1"] / 100, penalize.diagonal = FALSE)$wi)})
-                                   } else if (method %in% c("GGL", "FGL")) {
+                                                                        } else if (method %in% c("GGL", "FGL")) {
                                      listRes <- lapply(JGL::JGL(Y = subDats, penalty = ifelse(method == "GGL", "group", "fused"),
                                                                 penalize.diagonal = FALSE,
                                                                 lambda1 = lambs[t, "lambda1"] / 100,
                                                                 lambda2 = lambs[t, "lambda2"] / 50 / 1000,
                                                                 return.whole.theta = TRUE)$theta, FUN = adj)
-                                   } else if (method == "RCM") {
-                                     arrayRes <- rcmTemp <- rcm::randCov(x = subDats, lambda1 = lambs[t, "lambda1"] / 100,
+                                                                        } else if (method == "RCM") {
+                                     arrayRes <- randCov(x = subDats, lambda1 = lambs[t, "lambda1"] / 100,
                                                                     lambda2 = lambs[t, "lambda2"] / 50,
                                                                     lambda3 = lambs[t, "lambda3"] / 100000)$Omegas
                                      listRes <- lapply(lapply(1:K, FUN = function(k) {
                                        arrayRes[, , k]}), FUN = adj)
-                                   }
-                                   return(listRes)
+                                                                        }
+                                 }, error = function(e) {
+                                   warning(paste0("stARS failed for lambda1 = ", lambs[t, "lambda1"], ", lambda2 = ",
+                                                  lambs[t, "lambda2"], ", lambda3 = ", lambs[t, "lambda3"]))
+                                   return(NULL)
                                  })
                                  return(listRes)
                                }
@@ -147,13 +150,13 @@ starsRccm <- function(datf, lambs, method = "RCCM", G = 2, N = 10,
               adj(glasso::glasso(cov(x), rho = lambs[t, "lambda1"] / 100,
                                                                             penalize.diagonal = FALSE)$wi)})
           } else if (method %in% c("GGL", "FGL")) {
-            listRes <- lapply(subDats, FUN = function(x) {
-              adj(JGL::JGL(Y = x, penalty = ifelse(method == "GGL", "group", "fused"),
-                                                                      penalize.diagonal = FALSE, lambda1 = lambs[t, "lambda1"],
-                                                                      lambda2 = lambs[t, "lambda2"] / 50 / 1000,
-                                                                      return.whole.theta = TRUE)$theta)})
+            listRes <- lapply(JGL::JGL(Y = subDats, penalty = ifelse(method == "GGL", "group", "fused"),
+                                       penalize.diagonal = FALSE,
+                                       lambda1 = lambs[t, "lambda1"] / 100,
+                                       lambda2 = lambs[t, "lambda2"] / 50 / 1000,
+                                       return.whole.theta = TRUE)$theta, FUN = adj)
           } else if (method == "RCM") {
-            arrayRes <- rcmTemp <- randCov(x = subDats, lambda1 = lambs[t, "lambda1"] / 100,
+            arrayRes <- randCov(x = subDats, lambda1 = lambs[t, "lambda1"] / 100,
                                            lambda2 = lambs[t, "lambda2"] / 50,
                                            lambda3 = lambs[t, "lambda3"] / 100000)$Omegas
             listRes <- lapply(lapply(1:K, FUN = function(k) {
@@ -161,7 +164,10 @@ starsRccm <- function(datf, lambs, method = "RCCM", G = 2, N = 10,
           }
           return(listRes)
         }, error = function(e) {
-          NA})
+          warning(paste0("stARS failed for lambda1 = ", lambs[t, "lambda1"], ", lambda2 = ",
+                         lambs[t, "lambda2"], ", lambda3 = ", lambs[t, "lambda3"]))
+          return(NULL)
+          })
       })
     }
     return(nets)
@@ -233,7 +239,7 @@ starsRccm <- function(datf, lambs, method = "RCCM", G = 2, N = 10,
     optD <- min(unlist(dResults[which(dResults$dBar <= beta & dResults$Sparsity == optSparse), c("D")]))
   } else {
     # Displaying a warning that instability was never low enough
-    warning(paste0("minimum instability of ", round(min(dResults$dBar), 3), " not less than beta = ", beta,
+    warning(paste0("Minimum instability of ", round(min(dResults$dBar), 3), " not less than beta = ", beta,
                    ". Returning maximum sparsity result."))
     optSparse <- max(dResults$Sparsity)
     optD <- min(dResults[which(dResults$Sparsity == optSparse), "D"])
