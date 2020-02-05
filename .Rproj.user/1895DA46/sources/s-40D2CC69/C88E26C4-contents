@@ -3,9 +3,9 @@
 #' This function implements a modified stability approach for
 #' regularization selection (stARS) method for tuning parameter
 #' selection. Methods available to implement include the
-#' fused graphical lasso (\link[JGL::FGL]{FGL}), joint graphical lasso (\link[JGL::JGL]{JGL}),
-#' graphical lasso (\link[glasso::glasso]{GLasso}), random covariance clustering
-#' model (\link[rccm]{RCCM}), and the random covariance model (\link[randCov]{RCM}).
+#' fused graphical lasso (\link[JGL]{FGL}), group graphical lasso (\link[JGL]{GGL}),
+#' graphical lasso (\link[glasso]{glasso}), random covariance clustering
+#' model (\link{rccm}), and the random covariance model (\link{randCov}).
 #'
 #' @param datf List of \eqn{K} data sets each of dimension \eqn{n_k} x \eqn{p}.
 #' @param lambs A data frame of candidate tuning parameter values with three columns: lambda1, lambda2, and lambda3.
@@ -106,7 +106,7 @@ starsRccm <- function(datf, lambs, method = "RCCM", G = 2, N = 10,
       cl <- parallel::makeCluster(ncores) # creates a cluster with <ncore> cores
       doParallel::registerDoParallel(cl) # register the cluster
       nets <- foreach::foreach(t = 1:nrow(lambs),
-                               .export = c("method", "subDats", "G", "K", "lambs", "z0s")) %dopar% {
+                               .export = c("method", "G", "K", "lambs", "z0s")) %dopar% {
                                  listRes <- NULL
                                  tryCatch({
                                    if (method == "RCCM") {
