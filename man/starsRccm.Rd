@@ -31,8 +31,8 @@ A data frame of optimally selected tuning parameter values and the sparsity leve
 This function implements a modified stability approach for
 regularization selection (stARS) method for tuning parameter
 selection. Methods available to implement include the
-fused graphical lasso (\link[JGL]{JGL}), group graphical lasso (\link[JGL]{JGL}),
-graphical lasso (\link[glasso]{GLasso}), random covariance clustering
+fused graphical lasso (\link[JGL:JGL]{FGL}), group graphical lasso (\link[JGL:JGL]{GGL}),
+graphical lasso (\link[glasso:glasso]{GLasso}), random covariance clustering
 model (\link{rccm}), and the random covariance model (\link{randCov}).
 }
 \examples{

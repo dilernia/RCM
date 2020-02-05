@@ -5,17 +5,17 @@
     "dirty" : false,
     "encoding" : "UTF-8",
     "folds" : "",
-    "hash" : "0",
+    "hash" : "1042842729",
     "id" : "502879C0",
-    "lastKnownWriteTime" : 1580931676,
-    "last_content_update" : 1580931676,
+    "lastKnownWriteTime" : 1580931902,
+    "last_content_update" : 1580931902,
     "path" : "C:/Users/Owner/Dropbox/Minnesota/fMRI Research/rcm/NAMESPACE",
     "project_path" : "NAMESPACE",
     "properties" : {
         "cursorPosition" : "0,0",
         "scrollLine" : "0"
     },
-    "read_only" : false,
+    "read_only" : true,
     "read_only_alternatives" : [
     ],
     "relative_order" : 1,
