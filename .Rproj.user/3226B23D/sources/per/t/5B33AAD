@@ -1,0 +1,22 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1581535614058.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "53|57|197|0|\n",
+    "hash" : "4116026253",
+    "id" : "5B33AAD",
+    "lastKnownWriteTime" : 1580844933,
+    "last_content_update" : 1581536092808,
+    "path" : "C:/Users/goblu/Dropbox/Minnesota/fMRI Research/rcm/R/rccSim.R",
+    "project_path" : "R/rccSim.R",
+    "properties" : {
+        "cursorPosition" : "46,94",
+        "scrollLine" : "38"
+    },
+    "relative_order" : 1,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}
