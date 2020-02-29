@@ -69,6 +69,7 @@ zToA <- function(z) {
 #' @param y Second integer vector of cluster memberships.
 #' @return The rand index value, bounded between 0 and 1.
 #'
+#' @export
 randCalc <- function(x, y) {
   Ahat <- zToA(x)[lower.tri(zToA(x), diag = FALSE)]
 A0 <- zToA(y)[lower.tri(zToA(y), diag = FALSE)]
