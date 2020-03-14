@@ -168,13 +168,9 @@ rccSim <- function(G = 2, clustSize = c(67, 37), p = 10,
                                                                                     diag = FALSE)]
 
       # Forcing subject-level matrix to have similar value as group-level matrix
-      Omegaks[, , k] <- gks[, , k] * (Omega0s[, , zgks[k]] + matrix(rnorm(n = p * p, sd = 0.05),
+      Omegaks[, , k] <- gks[, , k] * (Omega0s[, , zgks[k]] + matrix(rnorm(n = p * p, sd = 0.10),
                                                                     nrow = p, ncol = p))
 
-      # Capping off-diagonal entries to 1 in absolute value
-      diags <- diag(Omegaks[, , k])
-      Omegaks[, , k][abs(Omegaks[, , k]) > 1] <- sign(Omegaks[, , k][abs(Omegaks[, , k]) > 1])
-      diag(Omegaks[, , k]) <- diags
 
       # Changing edge presence for floor(0.10 * E) pairs of vertices from group-level graph
       if (floor(rho * sum(gks[, , k])) > 0) {
