@@ -29,6 +29,7 @@
 #' @param n Positive integer. Number of observations for each subject on each variable.
 #' @param overlap Positive number between 0 and 1. Approximate proportion of overlapping edges across cluster-level networks.
 #' @param rho Positive number between 0 and 1. Approximate proportion of differential edges for subjects compared to their corresponding cluster-level network.
+#' @param esd Standard deviation of mean 0 noise added to generated subject-level matrices for variation from the corresponding group-level matrix.
 #' @param type Graph type. Options are "hub" or "random".
 #' @param eprob Probability of two nodes having an edge between them. Only applicable if type = "random".
 #' @return A list of length 5 containing:
@@ -55,7 +56,7 @@
 #'
 #' @export
 rccSim <- function(G = 2, clustSize = c(67, 37), p = 10,
-                   n = 177, overlap = 0.50, rho = 0.10, type = "hub", eprob = 0.50) {
+                   n = 177, overlap = 0.50, rho = 0.10, esd = 0.05, type = "hub", eprob = 0.50) {
 
   # Calculating total number of subjects
   K <- ifelse(length(clustSize) == 1, G * clustSize, sum(clustSize))
@@ -168,7 +169,7 @@ rccSim <- function(G = 2, clustSize = c(67, 37), p = 10,
                                                                                     diag = FALSE)]
 
       # Forcing subject-level matrix to have similar value as group-level matrix
-      Omegaks[, , k] <- gks[, , k] * (Omega0s[, , zgks[k]] + matrix(rnorm(n = p * p, sd = 0.10),
+      Omegaks[, , k] <- gks[, , k] * (Omega0s[, , zgks[k]] + matrix(rnorm(n = p * p, sd = esd),
                                                                     nrow = p, ncol = p))
 
 

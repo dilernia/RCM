@@ -11,6 +11,7 @@ rccSim(
   n = 177,
   overlap = 0.5,
   rho = 0.1,
+  esd = 0.05,
   type = "hub",
   eprob = 0.5
 )
@@ -27,6 +28,8 @@ rccSim(
 \item{overlap}{Positive number between 0 and 1. Approximate proportion of overlapping edges across cluster-level networks.}
 
 \item{rho}{Positive number between 0 and 1. Approximate proportion of differential edges for subjects compared to their corresponding cluster-level network.}
+
+\item{esd}{Standard deviation of mean 0 noise added to generated subject-level matrices for variation from the corresponding group-level matrix.}
 
 \item{type}{Graph type. Options are "hub" or "random".}
 
