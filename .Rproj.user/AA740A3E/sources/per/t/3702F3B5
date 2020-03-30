@@ -5,15 +5,15 @@
     "dirty" : false,
     "encoding" : "UTF-8",
     "folds" : "",
-    "hash" : "865500291",
+    "hash" : "1496592935",
     "id" : "3702F3B5",
-    "lastKnownWriteTime" : 1585598619,
-    "last_content_update" : 1585598619572,
+    "lastKnownWriteTime" : 1585600745,
+    "last_content_update" : 1585600745336,
     "path" : "C:/Users/andre/Dropbox/Minnesota/fMRI Research/rcm/R/rccSim.R",
     "project_path" : "R/rccSim.R",
     "properties" : {
-        "cursorPosition" : "112,27",
-        "scrollLine" : "103"
+        "cursorPosition" : "124,9",
+        "scrollLine" : "107"
     },
     "read_only" : false,
     "read_only_alternatives" : [

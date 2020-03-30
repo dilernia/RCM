@@ -126,7 +126,8 @@ rccSim <- function(G = 2, clustSize = c(67, 37), p = 10,
 
         # Adding in numShare shared edges
         for (e in 1:nrow(eShare)) {
-          g0s[, , g][eShare[e, 1], eShare[e, 2]] <- 1
+          g0s[, , g][eShare[e, 1], eShare[e, 2]] <- sample(c(1, 0), size = 1,
+                                                           prob = c(eprob, 1 - eprob))
         }
 
         # Saving graphs to keep constant across simulations
