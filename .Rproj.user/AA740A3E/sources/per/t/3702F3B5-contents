@@ -93,7 +93,7 @@ rccSim <- function(G = 2, clustSize = c(67, 37), p = 10,
 
   # Determining edges to be shared across groups
   numE <- p - J
-  numShare <- floor(numE * overlap)
+  numShare <- ifelse(type == "hub", floor(numE * overlap), floor(p * overlap))
   eShare <- matrix(which(lower.tri(matrix(1, p, p), diag = F),
                          arr.ind = TRUE)[sample(1:(p * (p - 1) / 2), size = numShare), ], ncol = 2)
 
@@ -173,12 +173,12 @@ rccSim <- function(G = 2, clustSize = c(67, 37), p = 10,
                                                                     nrow = p, ncol = p))
 
 
-      # Changing edge presence for floor(0.10 * E) pairs of vertices from group-level graph
+      # Changing edge presence for floor(rho * E) pairs of vertices from group-level graph
       if (floor(rho * sum(gks[, , k])) > 0) {
-        # Determining which %10 of node pairs to change edge presence for
+        # Determining which %rho*100 of node pairs to change edge presence for
         swaps <- matrix(which(lower.tri(matrix(1, p, p), diag = F),
                               arr.ind = TRUE)[sample(1:(p * (p - 1) / 2),
-                                                     size = floor(rho * sum(gks[, , k]))), ], ncol = 2)
+                              size = floor(rho * sum(gks[, , k]))), ], ncol = 2)
 
         for (s in 1:nrow(swaps)) {
           gks[, , k][swaps[s, 1], swaps[s, 2]] <- abs(gks[, , k][swaps[s, 1], swaps[s, 2]] - 1)
