@@ -93,9 +93,10 @@ rccSim <- function(G = 2, clustSize = c(67, 37), p = 10,
 
   # Determining edges to be shared across groups
   numE <- p - J
-  numShare <- ifelse(type == "hub", floor(numE * overlap), floor(p * overlap))
+  q <- choose(p, 2)
+  numShare <- ifelse(type == "hub", floor(numE * overlap), floor(q * overlap))
   eShare <- matrix(which(lower.tri(matrix(1, p, p), diag = F),
-                         arr.ind = TRUE)[sample(1:(p * (p - 1) / 2), size = numShare), ], ncol = 2)
+                         arr.ind = TRUE)[sample(1:q, size = numShare), ], ncol = 2)
 
   # Different graphs if balanced clusters or not
   balanced <- ifelse(length(clustSize) > 1, "_unbal", "")
