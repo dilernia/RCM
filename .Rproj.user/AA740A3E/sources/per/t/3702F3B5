@@ -4,16 +4,16 @@
     "created" : 1584214760558.000,
     "dirty" : false,
     "encoding" : "UTF-8",
-    "folds" : "",
-    "hash" : "1496592935",
+    "folds" : "84|55|91|2|\n105|59|106|24|\n113|27|121|8|\n164|59|165|24|\n178|45|189|6|\n",
+    "hash" : "1912294703",
     "id" : "3702F3B5",
-    "lastKnownWriteTime" : 1585600745,
-    "last_content_update" : 1585600745336,
+    "lastKnownWriteTime" : 1585605285,
+    "last_content_update" : 1585605285435,
     "path" : "C:/Users/andre/Dropbox/Minnesota/fMRI Research/rcm/R/rccSim.R",
     "project_path" : "R/rccSim.R",
     "properties" : {
-        "cursorPosition" : "124,9",
-        "scrollLine" : "107"
+        "cursorPosition" : "204,54",
+        "scrollLine" : "174"
     },
     "read_only" : false,
     "read_only_alternatives" : [

@@ -97,6 +97,7 @@ rccSim <- function(G = 2, clustSize = c(67, 37), p = 10,
   numShare <- ifelse(type == "hub", floor(numE * overlap), floor(q * overlap))
   eShare <- matrix(which(lower.tri(matrix(1, p, p), diag = F),
                          arr.ind = TRUE)[sample(1:q, size = numShare), ], ncol = 2)
+  shared <- sample(c(1, 0), size = nrow(eShare), replace = TRUE, prob = c(eprob, 1 - eprob))
 
   # Different graphs if balanced clusters or not
   balanced <- ifelse(length(clustSize) > 1, "_unbal", "")
@@ -126,8 +127,7 @@ rccSim <- function(G = 2, clustSize = c(67, 37), p = 10,
 
         # Adding in numShare shared edges
         for (e in 1:nrow(eShare)) {
-          g0s[, , g][eShare[e, 1], eShare[e, 2]] <- sample(c(1, 0), size = 1,
-                                                           prob = c(eprob, 1 - eprob))
+          g0s[, , g][eShare[e, 1], eShare[e, 2]] <- shared[e]
         }
 
         # Saving graphs to keep constant across simulations
