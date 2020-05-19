@@ -99,7 +99,7 @@ gapSelect <- function(x, gMax, B = 100, zs, optLambdas, ncores = 1) {
                                # Generating B reference data sets and calculating within-cluster variabilities
                                  vMat <- rep(NA, times = gMax - 1)
                                  while(sum(is.na(vMat)) > 0) {
-                                   #try(silent = F, expr = {
+                                   try(silent = TRUE, expr = {
                                      # Generating Data
                                      refDats <- lapply(1:K, FUN = function(k) {
                                        pMat <- matrix(0, ncol = p, nrow = p)
@@ -139,7 +139,7 @@ gapSelect <- function(x, gMax, B = 100, zs, optLambdas, ncores = 1) {
                                                         MARGIN = 1:2, FUN = var))
                                          } else {return(matrix(0, nrow = p, ncol = p))}}) %*% ws) / K
                                      }
-                                   #})
+                                   })
                                  }
                                return(vMat)
                              })
