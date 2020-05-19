@@ -1,24 +1,24 @@
 {
     "collab_server" : "",
     "contents" : "",
-    "created" : 1585840775262.000,
+    "created" : 1589857252221.000,
     "dirty" : false,
     "encoding" : "UTF-8",
     "folds" : "",
     "hash" : "859617622",
-    "id" : "4B3F55D5",
+    "id" : "E3C54228",
     "lastKnownWriteTime" : 1584214744,
     "last_content_update" : 1584214744,
     "path" : "C:/Users/andre/Dropbox/Minnesota/fMRI Research/rcm/R/starsRccm.R",
     "project_path" : "R/starsRccm.R",
     "properties" : {
-        "cursorPosition" : "108,89",
-        "scrollLine" : "120"
+        "cursorPosition" : "108,31",
+        "scrollLine" : "90"
     },
     "read_only" : false,
     "read_only_alternatives" : [
     ],
-    "relative_order" : 2,
+    "relative_order" : 4,
     "source_on_save" : false,
     "source_window" : "",
     "type" : "r_source"

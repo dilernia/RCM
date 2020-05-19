@@ -1,0 +1,25 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1589816982161.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "55|69|213|0|\n97|62|144|29|\n152|46|171|65|\n",
+    "hash" : "1940590839",
+    "id" : "99B95FC5",
+    "lastKnownWriteTime" : 1589898702,
+    "last_content_update" : 1589898767979,
+    "path" : "C:/Users/andre/Dropbox/Minnesota/fMRI Research/rcm/R/gapSelect.R",
+    "project_path" : "R/gapSelect.R",
+    "properties" : {
+        "cursorPosition" : "213,1",
+        "scrollLine" : "30"
+    },
+    "read_only" : false,
+    "read_only_alternatives" : [
+    ],
+    "relative_order" : 3,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}

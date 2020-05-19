@@ -87,7 +87,7 @@ rccSim <- function(G = 2, clustSize = c(67, 37), p = 10,
   J <- floor(sqrt(p))
 
   # Function for dividing entries by corresponding row sums to make positive definite
-  symmPosDef <- function(m, rs = rowSums(g0s[, , g])) {
+  symmPosDef <- function(m) {
     m <- m + t(m)
     smallE <- min(eigen(m)$values)
     if (smallE <= 0) {
@@ -159,7 +159,7 @@ rccSim <- function(G = 2, clustSize = c(67, 37), p = 10,
       }
 
       # Making matrix symmetric and positive definite
-      Omega0s[, , g] <- symmPosDef(Omega0s[, , g], rs = rwSum)
+      Omega0s[, , g] <- symmPosDef(Omega0s[, , g])
 
       # Making graph full again, not just lower triangular
       g0s[, , g] <- g0s[, , g] + t(g0s[, , g])
