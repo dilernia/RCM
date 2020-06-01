@@ -15,7 +15,7 @@
 #' @return A list of length 3 containing:
 #' \enumerate{
 #' \item The optimally selected number of clusters (nclusts).
-#' \item The \eqn{gMax-1} observed Gap statistics (gaps).
+#' \item The \eqn{gMax} observed Gap statistics (gaps).
 #' \item The \eqn{gMax-1} adjusted standard deviations of the simulated gap statistics (sigmas).
 #' }
 #'
@@ -55,6 +55,14 @@
 #' vol. 63, no. 2, 2001, pp. 411-423., doi:10.1111/1467-9868.00293.
 gapSelect <- function(x, gMax, B = 100, zs, optLambdas, ncores = 1) {
 
+  # Cleaning column names
+  colnames(optLambdas)[1:3] <- tolower(colnames(optLambdas)[1:3])
+  colnames(optLambdas)[4] <- toupper(colnames(optLambdas)[4])
+
+  if(all.equal(colnames(optLambdas), c("lambda1", "lambda2", "lambda3", "G")) == FALSE) {
+    stop("optLambdas must be a data frame with columns lambda1, lambda2, lambda3, and G.")
+  }
+
   # Number of subjects, variables, and average number of observations
   K <- length(x)
   p <- ncol(x[[1]])
@@ -68,19 +76,22 @@ gapSelect <- function(x, gMax, B = 100, zs, optLambdas, ncores = 1) {
     glasso::glasso(cov(xk), rho = 1e-16, penalize.diagonal = FALSE)$wi})
 
   # Calculate within-cluster variability measures for given clusterings
-  Vs <- numeric(gMax - 1)
+  Vs <- numeric(gMax)
   for(g in 2:gMax) {
     # Weights based on number of subjects in each cluster
     ws <- sapply(1:g, FUN = function(clust) {sum(zs[, g-1] == clust)})
-    Vs[g-1] <- sum(sapply(1:g, FUN = function(clust) {
+    Vs[g] <- sum(sapply(1:g, FUN = function(clust) {
       inds <- which(zs[, g-1] == clust)
       if(length(inds) > 1) {
-      return(apply(simplify2array(omegaks[inds]),
-            MARGIN = 1:2, FUN = var))
-    } else {
-      return(matrix(0, nrow = p, ncol = p))
-    }}) %*% ws) / K
+        return(apply(simplify2array(omegaks[inds]),
+                     MARGIN = 1:2, FUN = var))
+      } else {
+        return(matrix(0, nrow = p, ncol = p))
+      }}) %*% ws) / K
   }
+
+  # Variability for only 1 cluster
+  Vs[1] <- mean(apply(simplify2array(omegaks), MARGIN = 1:2, FUN = var))
 
   # Calculating range of observed values for precision matrices
   utInds <- upper.tri(diag(p), diag = T)
@@ -89,114 +100,122 @@ gapSelect <- function(x, gMax, B = 100, zs, optLambdas, ncores = 1) {
   maxMat <- apply(simplify2array(omegaks), MARGIN = 1:2, FUN = max)[utInds]
 
   # Instantiating matrix for within-cluster dispersion measures
-  vMat <- matrix(NA, nrow = gMax - 1, ncol = B)
+  vMat <- matrix(NA, nrow = gMax, ncol = B)
 
   if (ncores > 1) {
     `%dopar%` <- foreach::`%dopar%`
     cl <- parallel::makeCluster(ncores) # creates a cluster with <ncore> cores
     doParallel::registerDoParallel(cl) # register the cluster
     vMat <- simplify2array(foreach::foreach(b = 1:B) %dopar% {
-                               # Generating B reference data sets and calculating within-cluster variabilities
-                                 vMat <- rep(NA, times = gMax - 1)
-                                 while(sum(is.na(vMat)) > 0) {
-                                   try(silent = TRUE, expr = {
-                                     # Generating Data
-                                     refDats <- lapply(1:K, FUN = function(k) {
-                                       pMat <- matrix(0, ncol = p, nrow = p)
-                                       while(min(eigen(pMat, symmetric = TRUE)$values) <= 0) {
-                                         pMat <- matrix(0, ncol = p, nrow = p)
-                                         pMat[utInds] <- sapply(1:(q + p), FUN = function(i) {
-                                           runif(n = 1, min = minMat[i], max = maxMat[i])})
-                                         pMat <- pMat + t(pMat)
-                                         diag(pMat) <- diag(pMat) / 2
-                                         eVals <- eigen(pMat, symmetric = TRUE)$values
-                                         if(min(eVals) <= 0) {
-                                           pMat <- pMat + diag(abs(rep(min(eVals), times = p)) + 0.01)
-                                         }
-                                       }
-                                       return(mvtnorm::rmvnorm(n = n, sigma = chol2inv(chol(pMat))))})
+      # Generating B reference data sets and calculating within-cluster variabilities
+      vMat <- rep(NA, times = gMax)
+      while(sum(is.na(vMat)) > 0) {
+        try(silent = TRUE, expr = {
+          # Generating Data
+          refDats <- lapply(1:K, FUN = function(k) {
+            pMat <- matrix(0, ncol = p, nrow = p)
+            while(min(eigen(pMat, symmetric = TRUE)$values) <= 0) {
+              pMat <- matrix(0, ncol = p, nrow = p)
+              pMat[utInds] <- sapply(1:(q + p), FUN = function(i) {
+                runif(n = 1, min = minMat[i], max = maxMat[i])})
+              pMat <- pMat + t(pMat)
+              diag(pMat) <- diag(pMat) / 2
+              eVals <- eigen(pMat, symmetric = TRUE)$values
+              if(min(eVals) <= 0) {
+                pMat <- pMat + diag(abs(rep(min(eVals), times = p)) + 0.01)
+              }
+            }
+            return(mvtnorm::rmvnorm(n = n, sigma = chol2inv(chol(pMat))))})
 
-                                     # Calculating MLE precision matrices
-                                     pHats <- lapply(refDats, FUN = function(x){chol2inv(chol(cov(x)))})
+          # Calculating MLE precision matrices
+          pHats <- lapply(refDats, FUN = function(x){chol2inv(chol(cov(x)))})
 
-                                     # Analyzing with varying number of clusters
-                                     for(g in 2:gMax) {
-                                       res <- rcm::rccm(x = refDats, lambda1 = optLambdas$lambda1[g - 1],
-                                                   lambda2 = optLambdas$lambda2[g - 1], lambda3 = optLambdas$lambda3[g - 1],
-                                                   nclusts = g)
+          # Analyzing with varying number of clusters
+          for(g in 2:gMax) {
+            res <- rcm::rccm(x = refDats, lambda1 = optLambdas$lambda1[g - 1],
+                             lambda2 = optLambdas$lambda2[g - 1], lambda3 = optLambdas$lambda3[g - 1],
+                             nclusts = g)
 
-                                       # Estimated cluster memberships
-                                       zHats <- apply(res$weights, MARGIN = 2, FUN = which.max)
+            # Estimated cluster memberships
+            zHats <- apply(res$weights, MARGIN = 2, FUN = which.max)
 
-                                       # Weights based on number of subjects in each cluster
-                                       ws <- sapply(1:g, FUN = function(clust) {sum(zHats == clust)})
+            # Weights based on number of subjects in each cluster
+            ws <- sapply(1:g, FUN = function(clust) {sum(zHats == clust)})
 
-                                       # Calculating within-cluster dispersion
-                                       vMat[g-1] <- sum(sapply(1:g, FUN = function(clust) {
-                                         inds <- which(zHats == clust)
-                                         if(length(inds) > 0) {
-                                           return(apply(simplify2array(pHats[inds]),
-                                                        MARGIN = 1:2, FUN = var))
-                                         } else {return(matrix(0, nrow = p, ncol = p))}}) %*% ws) / K
-                                     }
-                                   })
-                                 }
-                               return(vMat)
-                             })
+            # Calculating within-cluster dispersion
+            vMat[g] <- sum(sapply(1:g, FUN = function(clust) {
+              inds <- which(zHats == clust)
+              if(length(inds) > 0) {
+                return(apply(simplify2array(pHats[inds]),
+                             MARGIN = 1:2, FUN = var))
+              } else {return(matrix(0, nrow = p, ncol = p))}}) %*% ws) / K
+          }
+
+          # Within-cluster variability specifying 1 cluster
+          vMat[1] <- mean(apply(simplify2array(pHats), MARGIN = 1:2, FUN = var))
+
+        })
+      }
+      return(vMat)
+    })
     parallel::stopCluster(cl)
   } else {
-  # Generating B reference data sets and calculating within-cluster variabilities
-  for(b in 1:B) {
-    while(sum(is.na(vMat[, b])) > 0) {
-    try(silent = TRUE, expr = {
-    # Generating Data
-    refDats <- lapply(1:K, FUN = function(k) {
-    pMat <- matrix(0, ncol = p, nrow = p)
-    while(min(eigen(pMat, symmetric = TRUE)$values) <= 0) {
+    # Generating B reference data sets and calculating within-cluster variabilities
+    for(b in 1:B) {
+      while(sum(is.na(vMat[, b])) > 0) {
+        try(silent = TRUE, expr = {
+          # Generating Data
+          refDats <- lapply(1:K, FUN = function(k) {
+            pMat <- matrix(0, ncol = p, nrow = p)
+            while(min(eigen(pMat, symmetric = TRUE)$values) <= 0) {
 
-    pMat <- matrix(0, ncol = p, nrow = p)
+              pMat <- matrix(0, ncol = p, nrow = p)
 
-    pMat[utInds] <- sapply(1:(q + p), FUN = function(i) {
-      runif(n = 1, min = minMat[i], max = maxMat[i])})
+              pMat[utInds] <- sapply(1:(q + p), FUN = function(i) {
+                runif(n = 1, min = minMat[i], max = maxMat[i])})
 
-    pMat <- pMat + t(pMat)
+              pMat <- pMat + t(pMat)
 
-    diag(pMat) <- diag(pMat) / 2
+              diag(pMat) <- diag(pMat) / 2
 
-    eVals <- eigen(pMat, symmetric = TRUE)$values
+              eVals <- eigen(pMat, symmetric = TRUE)$values
 
-    if(min(eVals) <= 0) {
-      pMat <- pMat + diag(abs(rep(min(eVals), times = p)) + 0.01)
+              if(min(eVals) <= 0) {
+                pMat <- pMat + diag(abs(rep(min(eVals), times = p)) + 0.01)
+              }
+            }
+            return(mvtnorm::rmvnorm(n = n, sigma = chol2inv(chol(pMat))))})
+
+          # Calculating MLE precision matrices
+          pHats <- lapply(refDats, FUN = function(x){chol2inv(chol(cov(x)))})
+
+          # Analyzing with varying number of clusters
+          for(g in 2:gMax) {
+            res <- rcm::rccm(x = refDats, lambda1 = optLambdas$lambda1[g - 1],
+                             lambda2 = optLambdas$lambda2[g - 1], lambda3 = optLambdas$lambda3[g - 1],
+                             nclusts = g)
+
+            # Estimated cluster memberships
+            zHats <- apply(res$weights, MARGIN = 2, FUN = which.max)
+
+            # Weights based on number of subjects in each cluster
+            ws <- sapply(1:g, FUN = function(clust) {sum(zHats == clust)})
+
+            # Calculating within-cluster dispersion
+            vMat[g, b] <- sum(sapply(1:g, FUN = function(clust) {
+              inds <- which(zHats == clust)
+              if(length(inds) > 0) {
+                return(apply(simplify2array(pHats[inds]),
+                             MARGIN = 1:2, FUN = var))
+              } else {return(matrix(0, nrow = p, ncol = p))}}) %*% ws) / K
+          }
+
+          # Within-cluster variability specifying 1 cluster
+          vMat[1, b] <- mean(apply(simplify2array(pHats), MARGIN = 1:2, FUN = var))
+
+        })
+      }
     }
-    }
-    return(mvtnorm::rmvnorm(n = n, sigma = chol2inv(chol(pMat))))})
-
-    # Calculating MLE precision matrices
-    pHats <- lapply(refDats, FUN = function(x){chol2inv(chol(cov(x)))})
-
-    # Analyzing with varying number of clusters
-    for(g in 2:gMax) {
-    res <- rccm(x = refDats, lambda1 = optLambdas$lambda1[g - 1],
-                    lambda2 = optLambdas$lambda2[g - 1], lambda3 = optLambdas$lambda3[g - 1],
-                    nclusts = g)
-
-    # Estimated cluster memberships
-    zHats <- apply(res$weights, MARGIN = 2, FUN = which.max)
-
-    # Weights based on number of subjects in each cluster
-    ws <- sapply(1:g, FUN = function(clust) {sum(zHats == clust)})
-
-    # Calculating within-cluster dispersion
-    vMat[g-1, b] <- sum(sapply(1:g, FUN = function(clust) {
-      inds <- which(zHats == clust)
-      if(length(inds) > 0) {
-      return(apply(simplify2array(pHats[inds]),
-            MARGIN = 1:2, FUN = var))
-        } else {return(matrix(0, nrow = p, ncol = p))}}) %*% ws) / K
-    }
-    })
-    }
-  }
   }
 
   # Calculating gap statistics
@@ -208,7 +227,14 @@ gapSelect <- function(x, gMax, B = 100, zs, optLambdas, ncores = 1) {
   checks <- c(sapply(2:(gMax-1), FUN = function(g) {
     gaps[g-1] >= gaps[g] - sigmas[g]}), TRUE)
 
+
+  # Selecting optimal number of clusters
+  checks <- c(sapply(1:(gMax-1), FUN = function(g) {
+    gaps[g] >= gaps[g + 1] - sigmas[g + 1]}), TRUE)
+
+  nclusts <- (1:gMax)[which(checks)[1]]
+
   # Returning optimal number of clusters
-  return(list(nclusts = (2:gMax)[which(checks)[1]],
+  return(list(nclusts = nclusts,
               gaps = gaps, sigmas = sigmas))
 }
