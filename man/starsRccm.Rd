@@ -4,16 +4,8 @@
 \alias{starsRccm}
 \title{Modified Stability Approach for Regularization Selection}
 \usage{
-starsRccm(
-  datf,
-  lambs,
-  method = "RCCM",
-  G = 2,
-  N = 10,
-  beta = 0.05,
-  z0s = NULL,
-  ncores = NULL
-)
+starsRccm(datf, lambs, method = "RCCM", G = 2, N = 10, beta = 0.05,
+  z0s = NULL, ncores = NULL)
 }
 \arguments{
 \item{datf}{List of \eqn{K} data sets each of dimension \eqn{n_k} x \eqn{p}.}
@@ -33,15 +25,32 @@ starsRccm(
 \item{ncores}{Number of computing cores to use if desired to run in parallel. Optional.}
 }
 \value{
-A data frame of optimally selected tuning parameter values with three columns: lambda1, lambda2, and lambda3.
+A data frame of optimally selected tuning parameter values and the sparsity level with three columns: lambda1, lambda2, lambda3, and sparsity.
 }
 \description{
 This function implements a modified stability approach for
 regularization selection (stARS) method for tuning parameter
 selection. Methods available to implement include the
-fused graphical lasso (\link[JGL::FGL]{FGL}), joint graphical lasso (\link[JGL::JGL]{JGL}),
-graphical lasso (\link[glasso::glasso]{GLasso}), random covariance clustering
-model (\link[rccm]{RCCM}), and the random covariance model (\link[randCov]{RCM}).
+fused graphical lasso (\link[JGL:JGL]{FGL}), group graphical lasso (\link[JGL:JGL]{GGL}),
+graphical lasso (\link[glasso:glasso]{GLasso}), random covariance clustering
+model (\link[rcm:rccm]{RCCM}), and the random covariance model (\link[rcm:randCov]{RCM}).
+}
+\examples{
+# Generate data with 2 clusters with 10 subjects in each group,
+# 10 variables for each subject, 100 observations for each variable for each subject,
+# the groups sharing about 50\% of network connections, and 10\% of differential connections
+# within each group
+set.seed(1994)
+myData <- rccSim(G = 2, clustSize = 10, p = 10, n = 100, overlap = 0.50, rho = 0.10)
+
+# Find optimal tuning parameter set using modified stARS
+optTune <- starsRccm(datf = myData$simDat, lambs = expand.grid(lambda1 = c(20, 25, 30),
+lambda2 = c(300, 325), lambda3 = 0.01), method = "RCCM", G = 2)
+
+# Analyze with RCCM using optimally selected tuning parameters
+resultRccm <- rccm(x = myData$simDat, lambda1 = optTune$lambda1[1],
+lambda2 = optTune$lambda2[1], lambda3 = optTune$lambda3[1], nclusts = 2)
+
 }
 \references{
 Liu, Han, Kathryn Roeder, and Larry Wasserman.

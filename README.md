@@ -12,7 +12,7 @@ Zhang, L., DiLernia, A., Quevedo, K., Camchong, J., Lim, K., & Pan, W. (2019). A
 
 ## Installation
 
-Install the package from GitHub with the following code:
+Install the package from GitHub with the following R code:
 
 \# Install devtools package  
 install.packages("devtools")

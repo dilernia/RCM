@@ -18,3 +18,16 @@ Numeric vector of length 2 containing the AIC and BIC values.
 This function calculates AIC and BIC values
 for the random covariance clustering model (RCCM)
 }
+\examples{
+# Generate data
+set.seed(1994)
+myData <- rccSim(G = 2, clustSize = 10, p = 10, n = 100, overlap = 0.50, rho = 0.10)
+
+# Analyze with RCCM
+resultRccm <- rccm(x = myData$simDat, lambda1 = 20,
+lambda2 = 325, lambda3 = 0.01, nclusts = 2)
+
+# Calculate AIC and BIC
+aicbic(x = myData$simDat, omegaks = resultRccm$Omegas)
+
+}

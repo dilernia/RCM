@@ -16,3 +16,8 @@ An adjacency matrix containing 1's and 0's.
 This function calculates an adjacency matrix based on
 an integer vector of cluster memberships.
 }
+\examples{
+# Calculate adjacency matrix for clustering
+zToA(c(rep(1, 2), rep(2, 2), rep(3, 2)))
+
+}

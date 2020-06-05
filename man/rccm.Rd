@@ -4,16 +4,8 @@
 \alias{rccm}
 \title{Random Covariance Clustering Model}
 \usage{
-rccm(
-  x,
-  lambda1,
-  lambda2,
-  lambda3 = 0,
-  nclusts,
-  delta = 0.001,
-  max.iters = 100,
-  z0s = NULL
-)
+rccm(x, lambda1, lambda2, lambda3 = 0, nclusts, delta = 0.001,
+  max.iters = 100, z0s = NULL)
 }
 \arguments{
 \item{x}{List of \eqn{K} data matrices each of dimension \eqn{n_k} x \eqn{p}}
@@ -44,6 +36,17 @@ A list of length 3 containing:
 This function implements the Random Covariance Clustering Model (RCCM) for joint estimation of
 sparse precision matrices belonging to multiple clusters or groups. Optimization is conducted using block
 coordinate descent.
+}
+\examples{
+# Generate data with 2 clusters with 12 and 10 subjects respectively,
+# 15 variables for each subject, 100 observations for each variable for each subject,
+# the groups sharing about 50\% of network connections, and 10\% of differential connections
+# within each group
+myData <- rccSim(G = 2, clustSize = c(12, 10), p = 15, n = 100, overlap = 0.50, rho = 0.10)
+
+# Analyze simulated data with RCCM
+result <- rccm(x = myData$simDat, lambda1 = 10, lambda2 = 50, lambda3 = 2, nclusts = 2, delta = 0.001)
+
 }
 \author{
 Andrew DiLernia

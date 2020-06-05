@@ -39,6 +39,16 @@
 #' @author
 #' Andrew DiLernia
 #'
+#' @examples
+#' # Generate data with 2 clusters with 12 and 10 subjects respectively,
+#' # 15 variables for each subject, 100 observations for each variable for each subject,
+#' # the groups sharing about 50% of network connections, and 10% of differential connections
+#' # within each group
+#' myData <- rccSim(G = 2, clustSize = c(12, 10), p = 15, n = 100, overlap = 0.50, rho = 0.10)
+#'
+#' # View list of simulated data
+#' View(myData)
+#'
 #' @export
 rccSim <- function(G = 2, clustSize = c(67, 37), p = 10,
                    n = 177, overlap = 0.50, rho = 0.10) {

@@ -21,6 +21,16 @@
 #' @author
 #' Andrew DiLernia
 #'
+#' @examples
+#' # Generate data with 2 clusters with 12 and 10 subjects respectively,
+#' # 15 variables for each subject, 100 observations for each variable for each subject,
+#' # the groups sharing about 50% of network connections, and 10% of differential connections
+#' # within each group
+#' myData <- rccSim(G = 2, clustSize = c(12, 10), p = 15, n = 100, overlap = 0.50, rho = 0.10)
+#'
+#' # Analyze simulated data with RCCM
+#' result <- rccm(x = myData$simDat, lambda1 = 10, lambda2 = 50, lambda3 = 2, nclusts = 2, delta = 0.001)
+#'
 #' @export
 rccm <- function(x, lambda1, lambda2, lambda3 = 0, nclusts, delta = 0.001, max.iters = 100, z0s = NULL) {
 
@@ -81,9 +91,9 @@ rccm <- function(x, lambda1, lambda2, lambda3 = 0, nclusts, delta = 0.001, max.i
          max(abs(Omegas - Omegas.old)) > delta | counter < 1) {
 
     # Exit if exceeds max.iters
-    if (counter > max.iters) {
-      cat("Omegas fail to converge for lambda1 =", lambda1, ", lambda2 =", lambda2, ", lambda3 =", lambda3,
-          ", delta =", deltas[counter - 1])
+    if (counter >= max.iters) {
+      paste0("Omegas fail to converge for lambda1 =", lambda1, ", lambda2 =", lambda2, ", lambda3 =", lambda3,
+          ", delta =", deltas[counter - 1], "\n")
 
       # Returning results
       res <- list(Omega0, Omegas, wgk)
