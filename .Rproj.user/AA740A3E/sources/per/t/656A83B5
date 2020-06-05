@@ -4,21 +4,21 @@
     "created" : 1590981587479.000,
     "dirty" : false,
     "encoding" : "UTF-8",
-    "folds" : "74|43|75|70|\n111|79|124|100|\n142|91|147|87|\n156|17|206|2|\n",
-    "hash" : "3695477134",
+    "folds" : "8|31|28|0|\n38|38|46|0|\n90|96|272|0|\n",
+    "hash" : "2659743640",
     "id" : "656A83B5",
-    "lastKnownWriteTime" : 1591020174,
-    "last_content_update" : 1591020174820,
-    "path" : "C:/Users/andre/Dropbox/Minnesota/fMRI Research/rcm/R/gapSelect.R",
-    "project_path" : "R/gapSelect.R",
+    "lastKnownWriteTime" : 1591395685,
+    "last_content_update" : 1591395685944,
+    "path" : "C:/Users/andre/Dropbox/Minnesota/fMRI Research/rcm/R/cvTune.R",
+    "project_path" : "R/cvTune.R",
     "properties" : {
-        "cursorPosition" : "63,3",
-        "scrollLine" : "40"
+        "cursorPosition" : "80,80",
+        "scrollLine" : "64"
     },
     "read_only" : false,
     "read_only_alternatives" : [
     ],
-    "relative_order" : 2,
+    "relative_order" : 7,
     "source_on_save" : false,
     "source_window" : "",
     "type" : "r_source"

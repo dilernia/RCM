@@ -1,0 +1,162 @@
+# Install version of package used for Biostatistics submission
+if("rcm" %in% installed.packages() == FALSE) {
+devtools::install_github("dilernia/rcm@biostatistics")
+}
+
+# Load package
+library(rcm)
+
+# Note this single simulation takes roughly 1.5 minutes to run
+
+# Simulate data
+set.seed(1994)
+t1 <- Sys.time()
+G <- 2
+p <- 10
+myData <- rccSim(G = G, clustSize = 30, p = p, n = 177, overlap = 0.50, rho = 0.20)
+
+# Standardizing data
+myData$simDat <- lapply(myData$simDat, FUN = scale)
+
+# Grid of tuning parameters to search over
+lambdas <- expand.grid(lambda1 = c(15, 25, 35), lambda2 = c(4000, 5000), lambda3 = 100)
+
+# Find optimal tuning parameter set using modified stARS with 10 bootstrap samples
+optTune <- starsRccm(datf = myData$simDat, lambs = lambdas, G = G, N = 10, method = "RCCM")
+
+optWardggl <- starsRccm(datf = myData$simDat, lambs = lambdas, G = G, N = 10, method = "GGL")
+
+optGL <- starsRccm(datf = myData$simDat, lambs = lambdas, G = G, N = 10, method = "GLasso")
+
+# Analyze with optimally selected tuning parameters for RCCM
+RCCMres <- rccm(x = myData$simDat, lambda1 = optTune$lambda1[1],
+                   lambda2 = optTune$lambda2[1], lambda3 = optTune$lambda3[1], nclusts = G)
+
+# Estimated cluster memberships
+RCCMzHat <- apply(RCCMres$weights, MARGIN = 2, FUN = which.max)
+
+# Using Ward & GGL approach
+
+# Function for calculating pair-wise Frob norm differences and then clustering
+MatClust <- function(mats, G) {
+  K <- dim(mats)[3]
+  combos <- expand.grid(s1 = 1:K, s2 = 1:K)
+  distMat <- matrix(NA, nrow = K, ncol = K)
+  for(r in 1:K) {
+    for(s in 1:K) {
+      distMat[r, s] <- norm(mats[, , r] - mats[, , s], type = 'F')
+    }
+  }
+
+  cl0 <- cutree(hclust(d = as.dist(distMat), method = "ward.D"), k = G)
+
+  wgk <- matrix(NA, nrow = G, ncol = K)
+
+  for(i in 1:G) {
+    for(j in 1:K) {
+      wgk[i, j] <- ifelse(cl0[j] == i, 1, 0)
+    }
+  }
+  return(wgk)
+}
+
+K <- length(myData$simDat)
+Sl <- sapply(myData$simDat, cov, simplify = "array")
+gl <- sapply(1:K, simplify = "array", FUN = function(x){glasso::glasso(Sl[, , x], rho = 0.001,
+                                                                       penalize.diagonal = FALSE)$wi})
+
+# Estimating cluster memberships using Ward clustering based on dissimilarity matrix of Frob norm differences
+GGLres <- list()
+GGLres$weights <- MatClust(gl, G = G)
+
+# Analyzing using GGL within each estimated cluster
+GGLres$res <- unlist(lapply(FUN = function(g) {
+  prec <- JGL::JGL(Y = myData$simDat[which(as.logical(GGLres$weights[g, ]))], penalty = "group",
+                   penalize.diagonal = FALSE, lambda1 = optWardggl$lambda1[1] / 100,
+                   lambda2 = optWardggl$lambda2[1] / 50000, return.whole.theta = TRUE)$theta
+  return(setNames(prec, c(which(as.logical(GGLres$weights[g, ])))))}, X = 1:G), recursive = F)
+
+# Estimated cluster memberships
+GGLzHat <- apply(GGLres$weights, MARGIN = 2, FUN = which.max)
+
+# Estimated group-level network for GGL. Edge present if >= 50% of subjects have it in group
+  GGLres$Omegags <- array(NA, dim = c(p, p, G))
+  for(g in 1:G) {
+    GGLres$Omegags[, , g] <- round(apply(simplify2array(lapply(GGLres$res[which(GGLzHat == g)], FUN = adj)),
+                                  MARGIN = 1:2, FUN = mean))
+  }
+
+# Using GLasso & K-means clustering
+GLassores <- list()
+GLassores$res <- lapply(myData$simDat, FUN = function(x) {
+  glasso::glasso(cov(x), rho = optGL$lambda1[1] / 100, penalize.diagonal = FALSE)$wi})
+
+# Creating matrix of vectorized precision matrix estimates
+vMat <- do.call(rbind, lapply(X = GLassores$res, FUN = as.numeric))
+
+# Finding estimated cluster memberships using k-means clustering
+GLassores$weights <- as.integer(factor(kmeans(x = vMat, centers = G)$cluster, levels = c(1:G)))
+
+# Estimated cluster memberships
+GLassozHat <- GLassores$weights
+
+# Summarizing edge detection performances
+performanceSummary <- function(Omegaks, Omegags, zs, Omega0ks = myData$Omegaks, Omega0gs = myData$Omega0s, z0s = myData$zgks) {
+
+# Calculating Rand indexes and adjusted rand indexes
+RI <- randCalc(zs, z0s)
+RIadj <- mclust::adjustedRandIndex(zs, z0s)
+
+# Calculating Precision Matrix Error, True Positive Rate, and False Positive Rates
+subjSum <- sum(sapply(1:K, FUN = function(k){sum((adj(Omegaks[, , k]) +
+                                                    adj(Omega0ks[, , k]))[lower.tri(Omega0ks[, , k], diag = FALSE)] == 2)}))
+posskEdges <- sum(sapply(1:K, FUN = function(k){sum(adj(Omega0ks[, , k])[lower.tri(Omega0ks[, , k], diag = FALSE)] == 1)}))
+
+TPRk <- subjSum / posskEdges
+subjSum0 <- sum(sapply(1:K, FUN = function(k){sum((-1*adj(Omegaks[, , k]) +
+                                                     adj(Omega0ks[, , k]))[lower.tri(Omega0ks[, , k], diag = FALSE)] == -1)}))
+possk0s <- sum(sapply(1:K, FUN = function(k){sum(adj(Omega0ks[, , k])[lower.tri(Omega0ks[, , k], diag = FALSE)] == 0)}))
+
+FPRk <- subjSum0 / possk0s
+
+PrecisionK <- subjSum / (subjSum + subjSum0)
+
+F1k <- 2*(PrecisionK*TPRk) / (PrecisionK + TPRk)
+
+if(is.null(Omegags) == FALSE) {
+  grpSum <- sum(sapply(1:G, FUN = function(g){sum((adj(Omegags[, , g]) +
+                                                     adj(Omega0gs[, , g]))[lower.tri(Omega0gs[, , g], diag = FALSE)] == 2)}))
+  possgEdges <- sum(sapply(1:G, FUN = function(g){sum(adj(Omega0gs[, , g])[lower.tri(Omega0gs[, , g], diag = FALSE)] == 1)}))
+  TPRg <- grpSum / possgEdges
+  grpSum0 <- sum(sapply(1:G, FUN = function(g){sum((-1*adj(Omegags[, , g]) +
+                                                      adj(Omega0gs[, , g]))[lower.tri(Omega0gs[, , g], diag = FALSE)] == -1)}))
+  possg0s <- sum(sapply(1:G, FUN = function(g){sum(adj(Omega0gs[, , g])[lower.tri(Omega0gs[, , g], diag = FALSE)] == 0)}))
+
+  PrecisionG <- grpSum / (grpSum + grpSum0)
+
+  F1g <- 2*(PrecisionG*TPRg) / (PrecisionG + TPRg)
+
+  FPRg <- grpSum0 / possg0s
+} else {
+  TPRg <- NA
+  FPRg <- NA
+  PrecisionG <- NA
+  F1g <- NA
+}
+
+return(data.frame(RI = RI, RIadj = RIadj, TPRk = TPRk, FPRk = FPRk,
+                  PrecisionK = PrecisionK, F1k = F1k,
+                  TPRg = TPRg, FPRg = FPRg, PrecisionG = PrecisionG, F1g = F1g))
+}
+
+# Performance of RCCM using stARS
+performanceSummary(Omegaks = RCCMres$Omegas, Omegags = RCCMres$Omega0, zs = RCCMzHat)
+
+# Performance of Ward & GGL using stARS
+performanceSummary(Omegaks = simplify2array(GGLres$res), Omegags = GGLres$Omegags, zs = GGLzHat)
+
+# Performance of GLasso & K-means using stARS
+performanceSummary(Omegaks =simplify2array(GLassores$res), Omegags = NULL, zs = GLassozHat)
+
+t2 <- Sys.time()
+t2 - t1

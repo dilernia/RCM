@@ -26,7 +26,7 @@ the \eqn{G} column is the number of clusters that must range from 2 to \eqn{gMax
 A list of length 3 containing:
 \enumerate{
 \item The optimally selected number of clusters (nclusts).
-\item The \eqn{gMax-1} observed Gap statistics (gaps).
+\item The \eqn{gMax} observed Gap statistics (gaps).
 \item The \eqn{gMax-1} adjusted standard deviations of the simulated gap statistics (sigmas).
 }
 }
