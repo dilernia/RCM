@@ -53,9 +53,9 @@ Overview of main functions
 <td>Implements a modified stability approach for
 regularization selection (stARS) method for tuning parameter
 selection. Methods available to implement include the
-fused graphical lasso ([FGL](https://github.com/cran/JGL)), group graphical lasso ([GGL](https://github.com/cran/JGL)),
-graphical lasso ([GLasso](http://statweb.stanford.edu/~tibs/glasso/)), random covariance clustering
-model (RCCM), and the random covariance model ([RCM](#refs)).</td>
+[fused graphical lasso](https://github.com/cran/JGL) (Danaher et al., 2014), [group graphical lasso](https://github.com/cran/JGL) (Danaher et al., 2014),
+[graphical lasso](http://statweb.stanford.edu/~tibs/glasso/) (Friedman et al., 2008), random covariance clustering
+model (RCCM), and the random covariance model (Zhang et al., 2019).</td>
 </tr>
 <tr class="odd">
 <td><code>dwishart</code></td>
