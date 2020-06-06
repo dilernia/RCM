@@ -6,20 +6,20 @@ devtools::install_github("dilernia/rcm@biostatistics")
 # Load package
 library(rcm)
 
-# Note this single simulation takes roughly 1.5 minutes to run
+# Note this single simulation takes roughly 2 minutes to run
 
 # Simulate data
 set.seed(1994)
 t1 <- Sys.time()
 G <- 2
 p <- 10
-myData <- rccSim(G = G, clustSize = 30, p = p, n = 177, overlap = 0.50, rho = 0.20)
+myData <- rccSim(G = G, clustSize = 30, p = p, n = 177, overlap = 0.20, rho = 0.10)
 
 # Standardizing data
 myData$simDat <- lapply(myData$simDat, FUN = scale)
 
 # Grid of tuning parameters to search over
-lambdas <- expand.grid(lambda1 = c(15, 25, 35), lambda2 = c(4000, 5000), lambda3 = 100)
+lambdas <- expand.grid(lambda1 = c(1, 5, 15, 25, 35, 45), lambda2 = c(5000), lambda3 = 100)
 
 # Find optimal tuning parameter set using modified stARS with 10 bootstrap samples
 optTune <- starsRccm(datf = myData$simDat, lambs = lambdas, G = G, N = 10, method = "RCCM")
@@ -28,12 +28,24 @@ optWardggl <- starsRccm(datf = myData$simDat, lambs = lambdas, G = G, N = 10, me
 
 optGL <- starsRccm(datf = myData$simDat, lambs = lambdas, G = G, N = 10, method = "GLasso")
 
-# Analyze with optimally selected tuning parameters for RCCM
-RCCMres <- rccm(x = myData$simDat, lambda1 = optTune$lambda1[1],
-                   lambda2 = optTune$lambda2[1], lambda3 = optTune$lambda3[1], nclusts = G)
+# Find optimal tuning parameter set using 5-fold CV
+optTuneCV <- cvTune(x = myData$simDat, G = G, lambs = lambdas, 
+                    methods = c("RCCM", "GGL", "GLasso"), folds = 5)
 
-# Estimated cluster memberships
-RCCMzHat <- apply(RCCMres$weights, MARGIN = 2, FUN = which.max)
+# Analyze with optimally selected tuning parameters for RCCM
+rccmResults <- lapply(X = c("stARS", "CV"), FUN = function(tune) {
+  
+if(tune == "stARS") {
+  lambda1 <- optTune$lambda1[1]
+  lambda2 <- optTune$lambda2[1]
+  lambda3 <- optTune$lambda3[1]
+} else {
+  lambda1 <- optTuneCV[which(optTuneCV$method == "RCCM"), ]$lambda1
+  lambda2 <- optTuneCV[which(optTuneCV$method == "RCCM"), ]$lambda2
+  lambda3 <- optTuneCV[which(optTuneCV$method == "RCCM"), ]$lambda3
+}
+  
+return(rccm(x = myData$simDat, lambda1 = lambda1, lambda2 = lambda2, lambda3 =lambda3, nclusts = G))})
 
 # Using Ward & GGL approach
 
@@ -65,6 +77,14 @@ Sl <- sapply(myData$simDat, cov, simplify = "array")
 gl <- sapply(1:K, simplify = "array", FUN = function(x){glasso::glasso(Sl[, , x], rho = 0.001,
                                                                        penalize.diagonal = FALSE)$wi})
 
+GGLResults <- lapply(X = c("stARS", "CV"), FUN = function(tune) {
+  
+lambda1 <- ifelse(tune == "stARS", optWardggl$lambda1[1], 
+                    optTuneCV[which(optTuneCV$method == "GGL"), ]$lambda1)
+
+lambda2 <- ifelse(tune == "stARS", optWardggl$lambda2[1], 
+                  optTuneCV[which(optTuneCV$method == "GGL"), ]$lambda2)
+  
 # Estimating cluster memberships using Ward clustering based on dissimilarity matrix of Frob norm differences
 GGLres <- list()
 GGLres$weights <- MatClust(gl, G = G)
@@ -72,11 +92,10 @@ GGLres$weights <- MatClust(gl, G = G)
 # Analyzing using GGL within each estimated cluster
 GGLres$res <- unlist(lapply(FUN = function(g) {
   prec <- JGL::JGL(Y = myData$simDat[which(as.logical(GGLres$weights[g, ]))], penalty = "group",
-                   penalize.diagonal = FALSE, lambda1 = optWardggl$lambda1[1] / 100,
-                   lambda2 = optWardggl$lambda2[1] / 50000, return.whole.theta = TRUE)$theta
+                   penalize.diagonal = FALSE, lambda1 = lambda1 / 100,
+                   lambda2 = lambda2 / 50000, return.whole.theta = TRUE)$theta
   return(setNames(prec, c(which(as.logical(GGLres$weights[g, ])))))}, X = 1:G), recursive = F)
 
-# Estimated cluster memberships
 GGLzHat <- apply(GGLres$weights, MARGIN = 2, FUN = which.max)
 
 # Estimated group-level network for GGL. Edge present if >= 50% of subjects have it in group
@@ -85,11 +104,18 @@ GGLzHat <- apply(GGLres$weights, MARGIN = 2, FUN = which.max)
     GGLres$Omegags[, , g] <- round(apply(simplify2array(lapply(GGLres$res[which(GGLzHat == g)], FUN = adj)),
                                   MARGIN = 1:2, FUN = mean))
   }
+  
+  return(GGLres)})
 
 # Using GLasso & K-means clustering
+GLassoResults <- lapply(X = c("stARS", "CV"), FUN = function(tune) {
 GLassores <- list()
+
+lambda1 <- ifelse(tune == "stARS", optGL$lambda1[1], 
+                  optTuneCV[which(optTuneCV$method == "RCCM"), ]$lambda1)
+
 GLassores$res <- lapply(myData$simDat, FUN = function(x) {
-  glasso::glasso(cov(x), rho = optGL$lambda1[1] / 100, penalize.diagonal = FALSE)$wi})
+  glasso::glasso(cov(x), rho = lambda1 / 100, penalize.diagonal = FALSE)$wi})
 
 # Creating matrix of vectorized precision matrix estimates
 vMat <- do.call(rbind, lapply(X = GLassores$res, FUN = as.numeric))
@@ -97,8 +123,7 @@ vMat <- do.call(rbind, lapply(X = GLassores$res, FUN = as.numeric))
 # Finding estimated cluster memberships using k-means clustering
 GLassores$weights <- as.integer(factor(kmeans(x = vMat, centers = G)$cluster, levels = c(1:G)))
 
-# Estimated cluster memberships
-GLassozHat <- GLassores$weights
+return(list(GLassores))})
 
 # Summarizing edge detection performances
 performanceSummary <- function(Omegaks, Omegags, zs, Omega0ks = myData$Omegaks, Omega0gs = myData$Omega0s, z0s = myData$zgks) {
@@ -149,14 +174,25 @@ return(data.frame(RI = RI, RIadj = RIadj, TPRk = TPRk, FPRk = FPRk,
                   TPRg = TPRg, FPRg = FPRg, PrecisionG = PrecisionG, F1g = F1g))
 }
 
-# Performance of RCCM using stARS
-performanceSummary(Omegaks = RCCMres$Omegas, Omegags = RCCMres$Omega0, zs = RCCMzHat)
+# Performances using stARS
+performanceSummary(Omegaks = rccmResults[[1]]$Omegas, Omegags =rccmResults[[1]]$Omega0, 
+                   zs = apply(rccmResults[[1]]$weights, FUN = which.max, MARGIN = 2))
 
-# Performance of Ward & GGL using stARS
-performanceSummary(Omegaks = simplify2array(GGLres$res), Omegags = GGLres$Omegags, zs = GGLzHat)
+performanceSummary(Omegaks = simplify2array(GGLResults[[1]]$res), Omegags = GGLResults[[1]]$Omegags, 
+                   zs = apply(GGLResults[[1]]$weights, FUN = which.max, MARGIN = 2))
 
-# Performance of GLasso & K-means using stARS
-performanceSummary(Omegaks =simplify2array(GLassores$res), Omegags = NULL, zs = GLassozHat)
+performanceSummary(Omegaks = simplify2array(GLassoResults[[1]][[1]]$res), 
+                   Omegags = NULL, zs = GLassoResults[[1]][[1]]$weights)
+
+# Performances using 5-fold CV
+performanceSummary(Omegaks = rccmResults[[2]]$Omegas, Omegags =rccmResults[[2]]$Omega0, 
+                   zs = apply(rccmResults[[2]]$weights, FUN = which.max, MARGIN = 2))
+
+performanceSummary(Omegaks = simplify2array(GGLResults[[2]]$res), Omegags = GGLResults[[2]]$Omegags, 
+                   zs = apply(GGLResults[[2]]$weights, FUN = which.max, MARGIN = 2))
+
+performanceSummary(Omegaks = simplify2array(GLassoResults[[2]][[1]]$res), 
+                   Omegags = NULL, zs = GLassoResults[[2]][[1]]$weights)
 
 t2 <- Sys.time()
 t2 - t1

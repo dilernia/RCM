@@ -33,10 +33,6 @@ Overview of main functions
 </tr>
 </thead>
 <tbody>
-<tr class="odd">
-<td><code>gapSelect</code></td>
-<td>Selects the optimal number of clusters for the Random Covariance Clustering Model (RCCM) based on a Gap statistic as proposed by Tibshirani et al. (2001).</td>
-</tr>
 <tr class="even">
 <td><code>rccm</code></td>
 <td>Implements the Random Covariance Clustering Model (RCCM) for joint estimation of sparse precision matrices belonging to multiple clusters or groups. Optimization is conducted using block coordinate descent.</td>
@@ -45,6 +41,11 @@ Overview of main functions
 <td><code>randCov</code></td>
 <td>Implements the Random Covariance Model (RCM) for joint estimation of multiple sparse precision matrices. Optimization is conducted using block coordinate descent.</td>
 </tr>
+<tr class="even">
+<td><code>gapSelect</code></td>
+<td>Selects the optimal number of clusters for the Random Covariance Clustering Model (RCCM) based on a Gap statistic as proposed by Tibshirani et al. (2001).</td>
+</tr>
+<tr class="odd">
 <td><code>rccSim</code></td>
 <td>Simulates data based on the Random Covariance Clustering Model (RCCM). Data is generated in a hierarchical manner, beginning with group-level networks and precision matrices and then subject-level networks and matrices.</td>
 </tr>
@@ -58,10 +59,18 @@ selection. Methods available to implement include the
 model (RCCM), and the random covariance model (Zhang et al., 2019).</td>
 </tr>
 <tr class="odd">
+<td><code>cvTune</code></td>
+<td>Implements k-fold cross-validation for tuning parameter
+selection. Methods available to implement include the
+<a href="https://github.com/cran/JGL">fused graphical lasso</a> (Danaher et al., 2014), <a href="https://github.com/cran/JGL">group graphical lasso</a> (Danaher et al., 2014),
+<a href="http://statweb.stanford.edu/~tibs/glasso/">graphical lasso</a> (Friedman et al., 2008), random covariance clustering
+model (RCCM), and the random covariance model (Zhang et al., 2019).</td>
+</tr>
+<tr class="even">
 <td><code>dwishart</code></td>
 <td>Probability density function for the Wishart distribution.</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><code>randCalc</code></td>
 <td>Calculates the rand index describing the amount of agreement between two integer vectors of cluster memberships.</td>
 </tr>
@@ -74,9 +83,12 @@ Installation
 
 </h2>
 
-Install the package from GitHub with the following R code:
+Install the latest version of the package from GitHub with the following R code:
 
-    install.packages("devtools")
+    if("devtools" %in% installed.packages() == FALSE) {
+        install.packages("devtools")
+    }
+    
     devtools::install_github("dilernia/rcm")
 
 <h2 id="examples">
