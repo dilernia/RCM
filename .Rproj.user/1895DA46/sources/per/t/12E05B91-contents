@@ -29,6 +29,7 @@
 #' @param n Positive integer. Number of observations for each subject on each variable.
 #' @param overlap Positive number between 0 and 1. Approximate proportion of overlapping edges across cluster-level networks.
 #' @param rho Positive number between 0 and 1. Approximate proportion of differential edges for subjects compared to their corresponding cluster-level network.
+#' @param esd Standard deviation of mean 0 noise added to generated subject-level matrices for variation from the corresponding group-level matrix.
 #' @param type Graph type. Options are "hub" or "random".
 #' @param eprob Probability of two nodes having an edge between them. Only applicable if type = "random".
 #' @return A list of length 5 containing:
@@ -55,7 +56,7 @@
 #'
 #' @export
 rccSim <- function(G = 2, clustSize = c(67, 37), p = 10,
-                   n = 177, overlap = 0.50, rho = 0.10, type = "hub", eprob = 0.50) {
+                   n = 177, overlap = 0.50, rho = 0.10, esd = 0.05, type = "hub", eprob = 0.50) {
 
   # Calculating total number of subjects
   K <- ifelse(length(clustSize) == 1, G * clustSize, sum(clustSize))
@@ -65,6 +66,10 @@ rccSim <- function(G = 2, clustSize = c(67, 37), p = 10,
   gks <- array(0, c(p, p, K))
   Omega0s <- array(0, c(p, p, G))
   Omegaks <- array(0, c(p, p, K))
+  if(length(clustSize) != 1 & length(clustSize) != G) {
+    stop("clustSize must be of length 1 or of length equal to the number of clusters")
+  }
+    else {
   if (length(clustSize) > 1) {
     zgks <- c()
     for (g in 1:length(clustSize)) {
@@ -72,6 +77,7 @@ rccSim <- function(G = 2, clustSize = c(67, 37), p = 10,
     }
   } else {
     zgks <- sort(rep(1:G, clustSize))
+  }
   }
   simDat <- list()
 
@@ -81,7 +87,7 @@ rccSim <- function(G = 2, clustSize = c(67, 37), p = 10,
   J <- floor(sqrt(p))
 
   # Function for dividing entries by corresponding row sums to make positive definite
-  symmPosDef <- function(m, rs = rowSums(g0s[, , g])) {
+  symmPosDef <- function(m) {
     m <- m + t(m)
     smallE <- min(eigen(m)$values)
     if (smallE <= 0) {
@@ -92,9 +98,11 @@ rccSim <- function(G = 2, clustSize = c(67, 37), p = 10,
 
   # Determining edges to be shared across groups
   numE <- p - J
-  numShare <- floor(numE * overlap)
+  q <- choose(p, 2)
+  numShare <- ifelse(type == "hub", floor(numE * overlap), floor(q * overlap))
   eShare <- matrix(which(lower.tri(matrix(1, p, p), diag = F),
-                         arr.ind = TRUE)[sample(1:(p * (p - 1) / 2), size = numShare), ], ncol = 2)
+                         arr.ind = TRUE)[sample(1:q, size = numShare), ], ncol = 2)
+  shared <- sample(c(1, 0), size = nrow(eShare), replace = TRUE, prob = c(eprob, 1 - eprob))
 
   # Different graphs if balanced clusters or not
   balanced <- ifelse(length(clustSize) > 1, "_unbal", "")
@@ -103,9 +111,6 @@ rccSim <- function(G = 2, clustSize = c(67, 37), p = 10,
   while (min(apply(Omega0s, MARGIN = 3, FUN = function(x) {
     min(eigen(x)$values)})) <= 0) {
     for (g in 1:G) {
-      # Keeping cluster-level graphs constant across simulations
-      if (file.exists(paste0("graphs_", type, "_p", p, "_over", overlap, "_G",
-                             G, balanced, ".rds")) == FALSE) {
         g0s[, , g] <- matrix(0, nrow = p, ncol = p)
 
         if(type == "hub") {
@@ -124,18 +129,11 @@ rccSim <- function(G = 2, clustSize = c(67, 37), p = 10,
 
         # Adding in numShare shared edges
         for (e in 1:nrow(eShare)) {
-          g0s[, , g][eShare[e, 1], eShare[e, 2]] <- 1
+          g0s[, , g][eShare[e, 1], eShare[e, 2]] <- shared[e]
         }
 
         # Saving graphs to keep constant across simulations
         g0s[, , g] <- (g0s[, , g] + t(g0s[, , g]) > 0.001) + 0
-
-        if (g == G) {
-          saveRDS(g0s, paste0("graphs_p", p, "_over", overlap, "_G", G, balanced, ".rds"))
-        }
-      } else {
-        g0s <- readRDS(paste0("graphs_", type, "p", p, "_over", overlap, "_G", G, balanced, ".rds"))
-      }
 
       # Making graph triangular for precision matrix generation and storing row edge count
       g0s[, , g] <- (g0s[, , g] + t(g0s[, , g]) > 0.001) + 0
@@ -151,7 +149,7 @@ rccSim <- function(G = 2, clustSize = c(67, 37), p = 10,
       }
 
       # Making matrix symmetric and positive definite
-      Omega0s[, , g] <- symmPosDef(Omega0s[, , g], rs = rwSum)
+      Omega0s[, , g] <- symmPosDef(Omega0s[, , g])
 
       # Making graph full again, not just lower triangular
       g0s[, , g] <- g0s[, , g] + t(g0s[, , g])
@@ -168,20 +166,16 @@ rccSim <- function(G = 2, clustSize = c(67, 37), p = 10,
                                                                                     diag = FALSE)]
 
       # Forcing subject-level matrix to have similar value as group-level matrix
-      Omegaks[, , k] <- gks[, , k] * (Omega0s[, , zgks[k]] + matrix(rnorm(n = p * p, sd = 0.05),
+      Omegaks[, , k] <- gks[, , k] * (Omega0s[, , zgks[k]] + matrix(rnorm(n = p * p, sd = esd),
                                                                     nrow = p, ncol = p))
 
-      # Capping off-diagonal entries to 1 in absolute value
-      diags <- diag(Omegaks[, , k])
-      Omegaks[, , k][abs(Omegaks[, , k]) > 1] <- sign(Omegaks[, , k][abs(Omegaks[, , k]) > 1])
-      diag(Omegaks[, , k]) <- diags
 
-      # Changing edge presence for floor(0.10 * E) pairs of vertices from group-level graph
+      # Changing edge presence for floor(rho * E) pairs of vertices from group-level graph
       if (floor(rho * sum(gks[, , k])) > 0) {
-        # Determining which %10 of node pairs to change edge presence for
+        # Determining which %rho*100 of node pairs to change edge presence for
         swaps <- matrix(which(lower.tri(matrix(1, p, p), diag = F),
                               arr.ind = TRUE)[sample(1:(p * (p - 1) / 2),
-                                                     size = floor(rho * sum(gks[, , k]))), ], ncol = 2)
+                              size = floor(rho * sum(gks[, , k]))), ], ncol = 2)
 
         for (s in 1:nrow(swaps)) {
           gks[, , k][swaps[s, 1], swaps[s, 2]] <- abs(gks[, , k][swaps[s, 1], swaps[s, 2]] - 1)

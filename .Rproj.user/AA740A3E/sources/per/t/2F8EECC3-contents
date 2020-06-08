@@ -1,0 +1,24 @@
+---
+title: "Example Simulation"
+author: "Andrew DiLernia"
+date: ""
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)
+```
+
+## Introduction
+
+This document walks through example simulation code used to produce the results obtained in 'Penalized model-based clustering of fMRI' submitted to the journal Biostatistics. First, we install and load the version of the R package used for the submitted manuscript:
+
+```{r}
+# Install version of package used for Biostatistics submission
+if("rcm" %in% installed.packages() == FALSE) {
+devtools::install_github("dilernia/rcm@biostatistics")
+}
+
+# Load package
+library(rcm)
+```
