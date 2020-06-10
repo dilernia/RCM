@@ -5,7 +5,7 @@
 \title{Simulation of Data for RCCM}
 \usage{
 rccSim(G = 2, clustSize = c(67, 37), p = 10, n = 177,
-  overlap = 0.5, rho = 0.1)
+  overlap = 0.5, rho = 0.1, type = "hub", eprob = 0.50)
 }
 \arguments{
 \item{G}{Positive integer. Number of groups or clusters.}
