@@ -110,7 +110,7 @@ rccSim <- function(G = 2, clustSize = c(67, 37), p = 10,
     for (g in 1:G) {
       # Keeping cluster-level graphs constant across simulations
       if (file.exists(paste0("graphs_p", p, "_over", overlap, "_G",
-                            G, balanced, ".rds")) == FALSE) {
+                            G, balanced, "_", type, eprob, ".rds")) == FALSE) {
         g0s[, , g] <- matrix(0, nrow = p, ncol = p)
         if(type == "hub") {
           hubs <- split(sample.int(p, size = p, replace = FALSE), rep(1:J, ceiling(p / J))[1:p])
@@ -135,10 +135,12 @@ rccSim <- function(G = 2, clustSize = c(67, 37), p = 10,
         g0s[, , g] <- (g0s[, , g] + t(g0s[, , g]) > 0.001) + 0
 
         if (g == G) {
-          saveRDS(g0s, paste0("graphs_p", p, "_over", overlap, "_G", G, balanced, ".rds"))
+          saveRDS(g0s, paste0("graphs_p", p, "_over", overlap, "_G",
+                            G, balanced, "_", type, eprob, ".rds"))
         }
       } else {
-        g0s <- readRDS(paste0("graphs_p", p, "_over", overlap, "_G", G, balanced, ".rds"))
+        g0s <- readRDS(paste0("graphs_p", p, "_over", overlap, "_G",
+                            G, balanced, "_", type, eprob, ".rds"))
       }
 
       # Making graph triangular for precision matrix generation and storing row edge count
