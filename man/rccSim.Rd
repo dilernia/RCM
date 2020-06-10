@@ -21,6 +21,8 @@ rccSim(G = 2, clustSize = c(67, 37), p = 10, n = 177,
 \item{rho}{Positive number between 0 and 1. Approximate proportion of differential edges for subjects compared to their corresponding cluster-level network.}
   
 \item{type}{Graph type. Options are "hub" or "random".}
+
+\item{eprob}{Probability of two nodes having an edge between them. Only applicable if type = "random".}
 }
 \value{
 A list of length 5 containing:
