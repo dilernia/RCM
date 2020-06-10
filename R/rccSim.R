@@ -27,6 +27,7 @@
 #' @param n Positive integer. Number of observations for each subject on each variable.
 #' @param overlap Positive number between 0 and 1. Approximate proportion of overlapping edges across cluster-level networks.
 #' @param rho Positive number between 0 and 1. Approximate proportion of differential edges for subjects compared to their corresponding cluster-level network.
+#' @param type Graph type. Options are "hub" or "random".
 #' @return A list of length 5 containing:
 #' \enumerate{
 #' \item list of \eqn{K} multivariate-Gaussian data sets each of dimension \eqn{n_k} x \eqn{p} (simDat).
