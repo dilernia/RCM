@@ -19,6 +19,8 @@ rccSim(G = 2, clustSize = c(67, 37), p = 10, n = 177,
 \item{overlap}{Positive number between 0 and 1. Approximate proportion of overlapping edges across cluster-level networks.}
 
 \item{rho}{Positive number between 0 and 1. Approximate proportion of differential edges for subjects compared to their corresponding cluster-level network.}
+  
+\item{type}{Graph type. Options are "hub" or "random".}
 }
 \value{
 A list of length 5 containing:
