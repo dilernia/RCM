@@ -51,7 +51,7 @@
 #'
 #' @export
 rccSim <- function(G = 2, clustSize = c(67, 37), p = 10,
-                   n = 177, overlap = 0.50, rho = 0.10) {
+                   n = 177, overlap = 0.50, rho = 0.10, type = "hub") {
 
   # Calculating total number of subjects
   K <- ifelse(length(clustSize) == 1, G * clustSize, sum(clustSize))
@@ -61,6 +61,10 @@ rccSim <- function(G = 2, clustSize = c(67, 37), p = 10,
   gks <- array(0, c(p, p, K))
   Omega0s <- array(0, c(p, p, G))
   Omegaks <- array(0, c(p, p, K))
+  if(length(clustSize) != 1 & length(clustSize) != G) {
+    stop("clustSize must be of length 1 or of length equal to the number of clusters")
+  }
+    else {
   if (length(clustSize) > 1) {
     zgks <- c()
     for (g in 1:length(clustSize)) {
@@ -68,6 +72,7 @@ rccSim <- function(G = 2, clustSize = c(67, 37), p = 10,
     }
   } else {
     zgks <- sort(rep(1:G, clustSize))
+  }
   }
   simDat <- list()
 
@@ -88,9 +93,11 @@ rccSim <- function(G = 2, clustSize = c(67, 37), p = 10,
 
   # Determining edges to be shared across groups
   numE <- p - J
-  numShare <- floor(numE * overlap)
+  q <- choose(p, 2)
+  numShare <- ifelse(type == "hub", floor(numE * overlap), floor(q * overlap))
   eShare <- matrix(which(lower.tri(matrix(1, p, p), diag = F),
-                         arr.ind = TRUE)[sample(1:(p * (p - 1) / 2), size = numShare), ], ncol = 2)
+                         arr.ind = TRUE)[sample(1:q, size = numShare), ], ncol = 2)
+  shared <- sample(c(1, 0), size = nrow(eShare), replace = TRUE, prob = c(eprob, 1 - eprob))
 
   # Different graphs if balanced clusters or not
   balanced <- ifelse(length(clustSize) > 1, "_unbal", "")
@@ -103,17 +110,23 @@ rccSim <- function(G = 2, clustSize = c(67, 37), p = 10,
       if (file.exists(paste0("graphs_p", p, "_over", overlap, "_G",
                             G, balanced, ".rds")) == FALSE) {
         g0s[, , g] <- matrix(0, nrow = p, ncol = p)
-        hubs <- split(sample.int(p, size = p, replace = FALSE), rep(1:J, ceiling(p / J))[1:p])
+        if(type == "hub") {
+          hubs <- split(sample.int(p, size = p, replace = FALSE), rep(1:J, ceiling(p / J))[1:p])
 
-        for (h in 1:J) {
-          for (v in hubs[[h]]) {
-            g0s[, , g][hubs[[h]][1], v] <- 1
+          for (h in 1:J) {
+            for (v in hubs[[h]]) {
+              g0s[, , g][hubs[[h]][1], v] <- 1
+            }
           }
+        } else if(type == "random") {
+          offInds <- lower.tri(g0s[, , g], diag = FALSE)
+          g0s[, , g][offInds] <- sample(c(1, 0), size = sum(offInds),
+                                        replace = TRUE, prob = c(eprob, 1 - eprob))
         }
 
         # Adding in numShare shared edges
         for (e in 1:nrow(eShare)) {
-          g0s[, , g][eShare[e, 1], eShare[e, 2]] <- 1
+          g0s[, , g][eShare[e, 1], eShare[e, 2]] <- shared[e]
         }
 
         # Saving graphs to keep constant across simulations
