@@ -68,8 +68,7 @@ rccSim <- function(G = 2, clustSize = c(67, 37), p = 10,
   Omegaks <- array(0, c(p, p, K))
   if(length(clustSize) != 1 & length(clustSize) != G) {
     stop("clustSize must be of length 1 or of length equal to the number of clusters")
-  }
-    else {
+  } else {
   if (length(clustSize) > 1) {
     zgks <- c()
     for (g in 1:length(clustSize)) {

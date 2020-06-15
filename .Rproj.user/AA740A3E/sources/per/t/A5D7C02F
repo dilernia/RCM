@@ -1,24 +1,24 @@
 {
     "collab_server" : "",
     "contents" : "",
-    "created" : 1582658379472.000,
+    "created" : 1591823271980.000,
     "dirty" : false,
     "encoding" : "UTF-8",
-    "folds" : "",
+    "folds" : "109|59|110|24|\n111|20|154|4|\n",
     "hash" : "1651051411",
-    "id" : "12E05B91",
+    "id" : "A5D7C02F",
     "lastKnownWriteTime" : 1591823502,
-    "last_content_update" : 1591823502,
-    "path" : "C:/Users/Owner/Dropbox/Minnesota/fMRI Research/rcm/R/rccSim.R",
+    "last_content_update" : 1591823604126,
+    "path" : "C:/Users/andre/Dropbox/Minnesota/fMRI Research/rcm/R/rccSim.R",
     "project_path" : "R/rccSim.R",
     "properties" : {
-        "cursorPosition" : "10,88",
-        "scrollLine" : "0"
+        "cursorPosition" : "172,45",
+        "scrollLine" : "160"
     },
     "read_only" : false,
     "read_only_alternatives" : [
     ],
-    "relative_order" : 4,
+    "relative_order" : 5,
     "source_on_save" : false,
     "source_window" : "",
     "type" : "r_source"
