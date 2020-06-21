@@ -1,24 +1,24 @@
 {
     "collab_server" : "",
     "contents" : "",
-    "created" : 1580937043589.000,
+    "created" : 1592766678174.000,
     "dirty" : false,
     "encoding" : "UTF-8",
-    "folds" : "11|48|24|0|\n51|21|60|0|\n102|55|124|0|\n147|32|164|0|\n",
-    "hash" : "1014053192",
-    "id" : "4472D74F",
-    "lastKnownWriteTime" : 1580939391,
-    "last_content_update" : 1580939391797,
+    "folds" : "190|47|206|0|\n",
+    "hash" : "1043997726",
+    "id" : "B2A6A429",
+    "lastKnownWriteTime" : 1592769772,
+    "last_content_update" : 1592769772162,
     "path" : "C:/Users/Owner/Dropbox/Minnesota/fMRI Research/rcm/R/rccmSummary.R",
     "project_path" : "R/rccmSummary.R",
     "properties" : {
-        "cursorPosition" : "48,40",
-        "scrollLine" : "0"
+        "cursorPosition" : "217,28",
+        "scrollLine" : "189"
     },
     "read_only" : false,
     "read_only_alternatives" : [
     ],
-    "relative_order" : 3,
+    "relative_order" : 5,
     "source_on_save" : false,
     "source_window" : "",
     "type" : "r_source"

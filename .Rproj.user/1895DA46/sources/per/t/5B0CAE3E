@@ -1,0 +1,25 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1592769878889.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "3433207792",
+    "id" : "5B0CAE3E",
+    "lastKnownWriteTime" : 1592769878,
+    "last_content_update" : 1592769878,
+    "path" : "C:/Users/Owner/AppData/Local/Temp/Temp1_Rcode (1).zip/Rcode/analysis_demo.R",
+    "project_path" : null,
+    "properties" : {
+        "cursorPosition" : "161,0",
+        "scrollLine" : "72"
+    },
+    "read_only" : false,
+    "read_only_alternatives" : [
+    ],
+    "relative_order" : 6,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}
