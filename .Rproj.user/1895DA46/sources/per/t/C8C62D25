@@ -1,0 +1,23 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1592846410683.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "480396578",
+    "id" : "C8C62D25",
+    "lastKnownWriteTime" : 1592795050,
+    "last_content_update" : 1592795050,
+    "path" : "C:/Users/Owner/Dropbox/Minnesota/fMRI Research/rcm/docs/exampleSimulationRCM.Rmd",
+    "project_path" : "docs/exampleSimulationRCM.Rmd",
+    "properties" : {
+    },
+    "read_only" : false,
+    "read_only_alternatives" : [
+    ],
+    "relative_order" : 8,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_markdown"
+}
