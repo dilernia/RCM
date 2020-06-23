@@ -97,7 +97,7 @@ Examples
 
 </h2>
 
-Here we walk through brief examples of using some key functions. For a more detailed simulation example for implementing the RCCM, see this <a href="https://www.andrewdilernia.com/files/examplesimulation">link</a>. For a detailed simulation example for implementing the Random Covariance Model (RCM), see this <a href="https://www.andrewdilernia.com/files/examplesimulation">link</a>.
+Here we walk through brief examples of using some key functions. For a more detailed simulation example for implementing the **RCCM**, see this <a href="https://dilernia.github.io/rcm/exampleSimulationRCCM.html">link</a>. For a detailed simulation example for implementing the Random Covariance Model (**RCM**), see this <a href="https://dilernia.github.io/rcm/exampleSimulationRCM.html">link</a>.
 
 ### Analyzing single data set
 
