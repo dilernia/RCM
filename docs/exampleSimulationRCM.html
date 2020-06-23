@@ -1877,7 +1877,7 @@ div.tocify {
 </div>
 <div id="results" class="section level2 tabset tabset-fade">
 <h2>Results</h2>
-<p>We summarize the performance of the RCM using both tuning parameter selection approaches. For evaluating performance in terms of edge detection we calculate the true positive rate (TPR), false positive rate (FPR), precision, and F1 scores for the subject-level networks, subscripted with <span class="math inline">\(k\)</span>, and cluster-level network, subscripted with <span class="math inline">\(g\)</span>.</p>
+<p>We summarize the performance of the RCM using both tuning parameter selection approaches. For evaluating performance in terms of edge detection we calculate the true positive rate (TPR) and false positive rate (FPR) for the subject-level networks, subscripted with <span class="math inline">\(k\)</span>, and cluster-level network, subscripted with <span class="math inline">\(g\)</span>.</p>
 <div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb10-1" title="1"><span class="co"># Function for summarizing edge detection performances</span></a>
 <a class="sourceLine" id="cb10-2" title="2">performanceSummary &lt;-<span class="st"> </span><span class="cf">function</span>(Omegaks, Omegags, <span class="dt">Omega0ks =</span> Omegas.true, <span class="dt">Omega0g =</span> Omega0.true) {</a>
 <a class="sourceLine" id="cb10-3" title="3"></a>

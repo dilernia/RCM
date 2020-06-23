@@ -195,7 +195,7 @@ Omegas.mbic <- Omegas.est[ , , , which.min(mbic.rc)]
 
 ## Results {.tabset .tabset-fade}
 
-We summarize the performance of the RCM using both tuning parameter selection approaches. For evaluating performance in terms of edge detection we calculate the true positive rate (TPR), false positive rate (FPR), precision, and F1 scores for the subject-level networks, subscripted with $k$, and cluster-level network, subscripted with $g$. 
+We summarize the performance of the RCM using both tuning parameter selection approaches. For evaluating performance in terms of edge detection we calculate the true positive rate (TPR) and false positive rate (FPR) for the subject-level networks, subscripted with $k$, and cluster-level network, subscripted with $g$. 
 
 ```{r}
 # Function for summarizing edge detection performances
