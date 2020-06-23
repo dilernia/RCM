@@ -19,7 +19,7 @@ knitr::opts_chunk$set(echo = TRUE, eval = TRUE, fig.align="center",
 This document walks through example simulation code used to produce the results obtained in 'A random covariance model for bi-level graphical modeling with application to resting-state fMRI data' submitted to the journal Biometrics. First, we install and load the R package for the submitted manuscript:
 
 ```{r}
-# Install version of package used for Biostatistics submission
+# Install package
 if("rcm" %in% installed.packages() == FALSE) {
 devtools::install_github("dilernia/rcm")
 }
@@ -34,7 +34,7 @@ library(kableExtra, quietly = T)
 
 ## Simulating Data {.tabset .tabset-fade}
 
-We simulate an example data set for $K=8$ total subjects. For each subject, we generate $n=50$ observations for $p=10$ variables with approximately $\rho = 20\%$ of network connections differing from their shared group-level network. 
+We simulate an example data set for $K=8$ total subjects. For each subject, we generate $n=50$ observations for $p=100$ variables with approximately $\rho = 20\%$ of network connections differing from their shared group-level network. 
 
 ```{r}
 # Generate individual variants with rho=0.2 and errors [-0.1,0.1] for common edges
@@ -184,11 +184,11 @@ for(j in 1:nlams) {
   }
   }  # end of loop for all lambdas
 
-# OPtimal results for BIC
+# Optimal results for BIC
 Omega0.bic <- Omega0.est[ , , which.min(bic.rc)]
 Omegas.bic <- Omegas.est[ , , , which.min(bic.rc)]
 
-# OPtimal results for modified BIC
+# Optimal results for modified BIC
 Omega0.mbic <- Omega0.est[ , , which.min(mbic.rc)]
 Omegas.mbic <- Omegas.est[ , , , which.min(mbic.rc)]
 ```

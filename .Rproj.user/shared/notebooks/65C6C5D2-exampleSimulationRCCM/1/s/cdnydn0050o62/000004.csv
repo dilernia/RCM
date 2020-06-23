@@ -1,0 +1,8 @@
+"0","# Display help file"
+"0","?cvTune"
+"0",""
+"0","# Find optimal tuning parameter set using 5-fold CV"
+"0","optTuneCV <- cvTune(x = myData$simDat, G = G, lambs = lambdas, "
+"0","                    methods = c(""RCCM"", ""GGL"", ""GLasso""), folds = 5)"
+"2","
+"
