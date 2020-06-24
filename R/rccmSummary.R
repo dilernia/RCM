@@ -29,8 +29,9 @@ bic_cal <- function(x, Omegas, Gk_est = NULL) {
   K <- length(x)
 
   if(is.null(Gk_est)) {
-    Gk_est <- (abs(Omegas) > 0.001) - array(diag(p),c(p,p,K))
+    Gk_est <- (round(Omegas,3) != 0) - array(diag(p), c(p, p, K))
   }
+
   nedges <- apply(Gk_est, MARGIN = 3, FUN = sum) / 2
 
   bic <- mapply(FUN = function(x1, x2, x3, x4) {(x1 - 1) * sum(diag(x2 %*% x3)) - x1 * log(det(x3)) + x4 * log(x1)},
@@ -73,8 +74,8 @@ mbic_cal <- function(x, Omega0, Omegas, lambda2, G0_est = NULL, Gk_est = NULL) {
   p <- dim(Omegas)[1]
   K <- length(x)
 
-  if(is.null(Gk_est)) {Gk_est = (abs(Omegas) > 0.001) - array(diag(p),c(p,p,K))}
-  if(is.null(G0_est)) {G0_est = (abs(Omega0) > 0.001) - diag(p)}
+  if(is.null(Gk_est)) {Gk_est = (round(Omegas,3) != 0) - array(diag(p),c(p,p,K))}
+  if(is.null(G0_est)) { G0_est = (round(Omega0,3) != 0) - diag(p)}
   nedges <- apply(Gk_est, MARGIN = 3, FUN = sum) / 2
 
   df.r <- (nedges + p) / (1 + lambda2)

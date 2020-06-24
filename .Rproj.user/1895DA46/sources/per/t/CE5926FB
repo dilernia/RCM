@@ -1,0 +1,25 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1593013803208.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "4260904120",
+    "id" : "CE5926FB",
+    "lastKnownWriteTime" : 1593033840,
+    "last_content_update" : 1593033840535,
+    "path" : "C:/Users/Owner/Dropbox/Minnesota/fMRI Research/rcm/R/rccmSummary.R",
+    "project_path" : "R/rccmSummary.R",
+    "properties" : {
+        "cursorPosition" : "77,65",
+        "scrollLine" : "55"
+    },
+    "read_only" : false,
+    "read_only_alternatives" : [
+    ],
+    "relative_order" : 2,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}
