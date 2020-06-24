@@ -1881,33 +1881,38 @@ div.tocify {
 <div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb10-1" title="1"><span class="co"># Function for summarizing edge detection performances</span></a>
 <a class="sourceLine" id="cb10-2" title="2">performanceSummary &lt;-<span class="st"> </span><span class="cf">function</span>(Omegaks, Omegags, <span class="dt">Omega0ks =</span> Omegas.true, <span class="dt">Omega0g =</span> Omega0.true) {</a>
 <a class="sourceLine" id="cb10-3" title="3"></a>
-<a class="sourceLine" id="cb10-4" title="4"><span class="co"># Adjacency matrix</span></a>
-<a class="sourceLine" id="cb10-5" title="5">adj &lt;-<span class="st"> </span><span class="cf">function</span>(mat, <span class="dt">thresh =</span> <span class="fl">0.001</span>) {</a>
-<a class="sourceLine" id="cb10-6" title="6">  <span class="kw">return</span>((<span class="kw">abs</span>(mat) <span class="op">&gt;</span><span class="st"> </span>thresh) <span class="op">+</span><span class="st"> </span><span class="dv">0</span>)</a>
-<a class="sourceLine" id="cb10-7" title="7">}</a>
-<a class="sourceLine" id="cb10-8" title="8">  </a>
-<a class="sourceLine" id="cb10-9" title="9"><span class="co"># Calculating Precision Matrix Error, True Positive Rate, and False Positive Rates</span></a>
-<a class="sourceLine" id="cb10-10" title="10">subjSum &lt;-<span class="st"> </span><span class="kw">sum</span>(<span class="kw">sapply</span>(<span class="dv">1</span><span class="op">:</span>K, <span class="dt">FUN =</span> <span class="cf">function</span>(k){<span class="kw">sum</span>((<span class="kw">adj</span>(Omegaks[, , k]) <span class="op">+</span></a>
-<a class="sourceLine" id="cb10-11" title="11"><span class="st">                                                    </span><span class="kw">adj</span>(Omega0ks[, , k]))[<span class="kw">lower.tri</span>(Omega0ks[, , k], <span class="dt">diag =</span> <span class="ot">FALSE</span>)] <span class="op">==</span><span class="st"> </span><span class="dv">2</span>)}))</a>
-<a class="sourceLine" id="cb10-12" title="12">posskEdges &lt;-<span class="st"> </span><span class="kw">sum</span>(<span class="kw">sapply</span>(<span class="dv">1</span><span class="op">:</span>K, <span class="dt">FUN =</span> <span class="cf">function</span>(k){<span class="kw">sum</span>(<span class="kw">adj</span>(Omega0ks[, , k])[<span class="kw">lower.tri</span>(Omega0ks[, , k], <span class="dt">diag =</span> <span class="ot">FALSE</span>)] <span class="op">==</span><span class="st"> </span><span class="dv">1</span>)}))</a>
-<a class="sourceLine" id="cb10-13" title="13"></a>
-<a class="sourceLine" id="cb10-14" title="14">TPRk &lt;-<span class="st"> </span>subjSum <span class="op">/</span><span class="st"> </span>posskEdges</a>
-<a class="sourceLine" id="cb10-15" title="15">subjSum0 &lt;-<span class="st"> </span><span class="kw">sum</span>(<span class="kw">sapply</span>(<span class="dv">1</span><span class="op">:</span>K, <span class="dt">FUN =</span> <span class="cf">function</span>(k){<span class="kw">sum</span>((<span class="op">-</span><span class="dv">1</span><span class="op">*</span><span class="kw">adj</span>(Omegaks[, , k]) <span class="op">+</span></a>
-<a class="sourceLine" id="cb10-16" title="16"><span class="st">                                                     </span><span class="kw">adj</span>(Omega0ks[, , k]))[<span class="kw">lower.tri</span>(Omega0ks[, , k], <span class="dt">diag =</span> <span class="ot">FALSE</span>)] <span class="op">==</span><span class="st"> </span><span class="dv">-1</span>)}))</a>
-<a class="sourceLine" id="cb10-17" title="17">possk0s &lt;-<span class="st"> </span><span class="kw">sum</span>(<span class="kw">sapply</span>(<span class="dv">1</span><span class="op">:</span>K, <span class="dt">FUN =</span> <span class="cf">function</span>(k){<span class="kw">sum</span>(<span class="kw">adj</span>(Omega0ks[, , k])[<span class="kw">lower.tri</span>(Omega0ks[, , k], <span class="dt">diag =</span> <span class="ot">FALSE</span>)] <span class="op">==</span><span class="st"> </span><span class="dv">0</span>)}))</a>
+<a class="sourceLine" id="cb10-4" title="4"><span class="co"># Rounding</span></a>
+<a class="sourceLine" id="cb10-5" title="5">Omegaks &lt;-<span class="st"> </span><span class="kw">round</span>(Omegaks, <span class="dv">3</span>)</a>
+<a class="sourceLine" id="cb10-6" title="6">Omegags &lt;-<span class="st"> </span><span class="kw">round</span>(Omegags, <span class="dv">3</span>)</a>
+<a class="sourceLine" id="cb10-7" title="7"></a>
+<a class="sourceLine" id="cb10-8" title="8"><span class="co"># Adjacency matrix</span></a>
+<a class="sourceLine" id="cb10-9" title="9">adj &lt;-<span class="st"> </span><span class="cf">function</span>(mat, <span class="dt">thresh =</span> <span class="fl">0.0001</span>) {</a>
+<a class="sourceLine" id="cb10-10" title="10">  <span class="kw">return</span>((<span class="kw">abs</span>(mat) <span class="op">&gt;</span><span class="st"> </span>thresh) <span class="op">+</span><span class="st"> </span><span class="dv">0</span>)</a>
+<a class="sourceLine" id="cb10-11" title="11">}</a>
+<a class="sourceLine" id="cb10-12" title="12">  </a>
+<a class="sourceLine" id="cb10-13" title="13"><span class="co"># Calculating True Positive Rate and False Positive Rates</span></a>
+<a class="sourceLine" id="cb10-14" title="14">subjSum &lt;-<span class="st"> </span><span class="kw">sum</span>(<span class="kw">sapply</span>(<span class="dv">1</span><span class="op">:</span>K, <span class="dt">FUN =</span> <span class="cf">function</span>(k){<span class="kw">sum</span>((<span class="kw">adj</span>(Omegaks[, , k]) <span class="op">+</span></a>
+<a class="sourceLine" id="cb10-15" title="15"><span class="st">                           </span><span class="kw">adj</span>(Omega0ks[, , k]))[<span class="kw">lower.tri</span>(Omega0ks[, , k], <span class="dt">diag =</span> <span class="ot">FALSE</span>)] <span class="op">==</span><span class="st"> </span><span class="dv">2</span>)}))</a>
+<a class="sourceLine" id="cb10-16" title="16">posskEdges &lt;-<span class="st"> </span><span class="kw">sum</span>(<span class="kw">sapply</span>(<span class="dv">1</span><span class="op">:</span>K, <span class="dt">FUN =</span> <span class="cf">function</span>(k){<span class="kw">sum</span>(<span class="kw">adj</span>(Omega0ks[, , k])[<span class="kw">lower.tri</span>(Omega0ks[, , k], </a>
+<a class="sourceLine" id="cb10-17" title="17">                                                                            <span class="dt">diag =</span> <span class="ot">FALSE</span>)] <span class="op">==</span><span class="st"> </span><span class="dv">1</span>)}))</a>
 <a class="sourceLine" id="cb10-18" title="18"></a>
-<a class="sourceLine" id="cb10-19" title="19">FPRk &lt;-<span class="st"> </span>subjSum0 <span class="op">/</span><span class="st"> </span>possk0s</a>
-<a class="sourceLine" id="cb10-20" title="20"></a>
-<a class="sourceLine" id="cb10-21" title="21">  grpSum &lt;-<span class="st"> </span><span class="kw">sum</span>((<span class="kw">adj</span>(Omegags) <span class="op">+</span><span class="st"> </span><span class="kw">adj</span>(Omega0g))[<span class="kw">lower.tri</span>(Omega0g, <span class="dt">diag =</span> <span class="ot">FALSE</span>)] <span class="op">==</span><span class="st"> </span><span class="dv">2</span>)</a>
-<a class="sourceLine" id="cb10-22" title="22">  possgEdges &lt;-<span class="st"> </span><span class="kw">sum</span>(<span class="kw">sapply</span>(<span class="dv">1</span><span class="op">:</span>G, <span class="dt">FUN =</span> <span class="cf">function</span>(g){<span class="kw">sum</span>(<span class="kw">adj</span>(Omega0g)[<span class="kw">lower.tri</span>(Omega0g, <span class="dt">diag =</span> <span class="ot">FALSE</span>)] <span class="op">==</span><span class="st"> </span><span class="dv">1</span>)}))</a>
-<a class="sourceLine" id="cb10-23" title="23">  TPRg &lt;-<span class="st"> </span>grpSum <span class="op">/</span><span class="st"> </span>possgEdges</a>
-<a class="sourceLine" id="cb10-24" title="24">  grpSum0 &lt;-<span class="st"> </span><span class="kw">sum</span>((<span class="op">-</span><span class="dv">1</span><span class="op">*</span><span class="kw">adj</span>(Omegags) <span class="op">+</span><span class="st"> </span><span class="kw">adj</span>(Omega0g))[<span class="kw">lower.tri</span>(Omega0g, <span class="dt">diag =</span> <span class="ot">FALSE</span>)] <span class="op">==</span><span class="st"> </span><span class="dv">-1</span>)</a>
-<a class="sourceLine" id="cb10-25" title="25">  possg0s &lt;-<span class="st"> </span><span class="kw">sum</span>(<span class="kw">adj</span>(Omega0g)[<span class="kw">lower.tri</span>(Omega0g, <span class="dt">diag =</span> <span class="ot">FALSE</span>)] <span class="op">==</span><span class="st"> </span><span class="dv">0</span>)</a>
-<a class="sourceLine" id="cb10-26" title="26"></a>
-<a class="sourceLine" id="cb10-27" title="27">  FPRg &lt;-<span class="st"> </span>grpSum0 <span class="op">/</span><span class="st"> </span>possg0s</a>
-<a class="sourceLine" id="cb10-28" title="28"></a>
-<a class="sourceLine" id="cb10-29" title="29"><span class="kw">return</span>(<span class="kw">data.frame</span>(<span class="dt">TPRk =</span> TPRk, <span class="dt">FPRk =</span> FPRk, <span class="dt">TPRg =</span> TPRg, <span class="dt">FPRg =</span> FPRg))</a>
-<a class="sourceLine" id="cb10-30" title="30">}</a></code></pre></div>
+<a class="sourceLine" id="cb10-19" title="19">TPRk &lt;-<span class="st"> </span>subjSum <span class="op">/</span><span class="st"> </span>posskEdges</a>
+<a class="sourceLine" id="cb10-20" title="20">subjSum0 &lt;-<span class="st"> </span><span class="kw">sum</span>(<span class="kw">sapply</span>(<span class="dv">1</span><span class="op">:</span>K, <span class="dt">FUN =</span> <span class="cf">function</span>(k){<span class="kw">sum</span>((<span class="op">-</span><span class="dv">1</span><span class="op">*</span><span class="kw">adj</span>(Omegaks[, , k]) <span class="op">+</span></a>
+<a class="sourceLine" id="cb10-21" title="21"><span class="st">                                                     </span><span class="kw">adj</span>(Omega0ks[, , k]))[<span class="kw">lower.tri</span>(Omega0ks[, , k], <span class="dt">diag =</span> <span class="ot">FALSE</span>)] <span class="op">==</span><span class="st"> </span><span class="dv">-1</span>)}))</a>
+<a class="sourceLine" id="cb10-22" title="22">possk0s &lt;-<span class="st"> </span><span class="kw">sum</span>(<span class="kw">sapply</span>(<span class="dv">1</span><span class="op">:</span>K, <span class="dt">FUN =</span> <span class="cf">function</span>(k){<span class="kw">sum</span>(<span class="kw">adj</span>(Omega0ks[, , k])[<span class="kw">lower.tri</span>(Omega0ks[, , k], <span class="dt">diag =</span> <span class="ot">FALSE</span>)] <span class="op">==</span><span class="st"> </span><span class="dv">0</span>)}))</a>
+<a class="sourceLine" id="cb10-23" title="23"></a>
+<a class="sourceLine" id="cb10-24" title="24">FPRk &lt;-<span class="st"> </span>subjSum0 <span class="op">/</span><span class="st"> </span>possk0s</a>
+<a class="sourceLine" id="cb10-25" title="25"></a>
+<a class="sourceLine" id="cb10-26" title="26">  grpSum &lt;-<span class="st"> </span><span class="kw">sum</span>((<span class="kw">adj</span>(Omegags) <span class="op">+</span><span class="st"> </span><span class="kw">adj</span>(Omega0g))[<span class="kw">lower.tri</span>(Omega0g, <span class="dt">diag =</span> <span class="ot">FALSE</span>)] <span class="op">==</span><span class="st"> </span><span class="dv">2</span>)</a>
+<a class="sourceLine" id="cb10-27" title="27">  possgEdges &lt;-<span class="st"> </span><span class="kw">sum</span>(<span class="kw">adj</span>(Omega0g)[<span class="kw">lower.tri</span>(Omega0g, <span class="dt">diag =</span> <span class="ot">FALSE</span>)] <span class="op">==</span><span class="st"> </span><span class="dv">1</span>)</a>
+<a class="sourceLine" id="cb10-28" title="28">  TPRg &lt;-<span class="st"> </span>grpSum <span class="op">/</span><span class="st"> </span>possgEdges</a>
+<a class="sourceLine" id="cb10-29" title="29">  grpSum0 &lt;-<span class="st"> </span><span class="kw">sum</span>((<span class="op">-</span><span class="dv">1</span><span class="op">*</span><span class="kw">adj</span>(Omegags) <span class="op">+</span><span class="st"> </span><span class="kw">adj</span>(Omega0g))[<span class="kw">lower.tri</span>(Omega0g, <span class="dt">diag =</span> <span class="ot">FALSE</span>)] <span class="op">==</span><span class="st"> </span><span class="dv">-1</span>)</a>
+<a class="sourceLine" id="cb10-30" title="30">  possg0s &lt;-<span class="st"> </span><span class="kw">sum</span>(<span class="kw">adj</span>(Omega0g)[<span class="kw">lower.tri</span>(Omega0g, <span class="dt">diag =</span> <span class="ot">FALSE</span>)] <span class="op">==</span><span class="st"> </span><span class="dv">0</span>)</a>
+<a class="sourceLine" id="cb10-31" title="31"></a>
+<a class="sourceLine" id="cb10-32" title="32">  FPRg &lt;-<span class="st"> </span>grpSum0 <span class="op">/</span><span class="st"> </span>possg0s</a>
+<a class="sourceLine" id="cb10-33" title="33"></a>
+<a class="sourceLine" id="cb10-34" title="34"><span class="kw">return</span>(<span class="kw">data.frame</span>(<span class="dt">TPRk =</span> TPRk, <span class="dt">FPRk =</span> FPRk, <span class="dt">TPRg =</span> TPRg, <span class="dt">FPRg =</span> FPRg))</a>
+<a class="sourceLine" id="cb10-35" title="35">}</a></code></pre></div>
 <div id="bic" class="section level3">
 <h3>BIC</h3>
 <div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb11-1" title="1"><span class="kw">performanceSummary</span>(<span class="dt">Omegaks =</span> Omegas.bic, <span class="dt">Omegag =</span> Omega0.bic) <span class="op">%&gt;%</span><span class="st"> </span></a>
@@ -1932,13 +1937,13 @@ FPRg
 <tbody>
 <tr>
 <td style="text-align:right;">
-0.822
+0.862
 </td>
 <td style="text-align:right;">
-0.006
+0.014
 </td>
 <td style="text-align:right;">
-0.449
+0.909
 </td>
 <td style="text-align:right;">
 0.001
@@ -1971,16 +1976,16 @@ FPRg
 <tbody>
 <tr>
 <td style="text-align:right;">
-0.949
+0.961
 </td>
 <td style="text-align:right;">
-0.078
+0.14
 </td>
 <td style="text-align:right;">
-0.5
+1
 </td>
 <td style="text-align:right;">
-0.022
+0.053
 </td>
 </tr>
 </tbody>
