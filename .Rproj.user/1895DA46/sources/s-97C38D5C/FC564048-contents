@@ -205,31 +205,19 @@ performanceSummary <- function(Omegaks, Omegags, Omega0ks = Omegas.true, Omega0g
 Omegaks <- round(Omegaks, 3)
 Omegags <- round(Omegags, 3)
 
-# Adjacency matrix
-adj <- function(mat, thresh = 0.0001) {
-  return((abs(mat) > thresh) + 0)
-}
-  
-# Calculating True Positive Rate and False Positive Rates
-subjSum <- sum(sapply(1:K, FUN = function(k){sum((adj(Omegaks[, , k]) +
-                           adj(Omega0ks[, , k]))[lower.tri(Omega0ks[, , k], diag = FALSE)] == 2)}))
-posskEdges <- sum(sapply(1:K, FUN = function(k){sum(adj(Omega0ks[, , k])[lower.tri(Omega0ks[, , k], 
-                                                                            diag = FALSE)] == 1)}))
+Gk.true <- (round(Omega0ks, 3) != 0) - array(diag(p), c(p, p, K))
+Gk.rc <- (round(Omegaks, 3) != 0) - array(diag(p), c(p, p, K))
+G.true <- (round(Omega0g, 3) != 0) - diag(p)
+G0.rc <- (round(Omegags, 3) != 0) - diag(p)
 
-TPRk <- subjSum / posskEdges
-subjSum0 <- sum(sapply(1:K, FUN = function(k){sum((-1*adj(Omegaks[, , k]) +
-                                                     adj(Omega0ks[, , k]))[lower.tri(Omega0ks[, , k], diag = FALSE)] == -1)}))
-possk0s <- sum(sapply(1:K, FUN = function(k){sum(adj(Omega0ks[, , k])[lower.tri(Omega0ks[, , k], diag = FALSE)] == 0)}))
+uptri.mat0 <- diag(0,p) 
+uptri.mat0[upper.tri(diag(p))] <- 1
+uptri.matk <- array(uptri.mat0, c(p, p, K))
 
-FPRk <- subjSum0 / possk0s
-
-  grpSum <- sum((adj(Omegags) + adj(Omega0g))[lower.tri(Omega0g, diag = FALSE)] == 2)
-  possgEdges <- sum(adj(Omega0g)[lower.tri(Omega0g, diag = FALSE)] == 1)
-  TPRg <- grpSum / possgEdges
-  grpSum0 <- sum((-1*adj(Omegags) + adj(Omega0g))[lower.tri(Omega0g, diag = FALSE)] == -1)
-  possg0s <- sum(adj(Omega0g)[lower.tri(Omega0g, diag = FALSE)] == 0)
-
-  FPRg <- grpSum0 / possg0s
+TPRk <- sum(Gk.rc * uptri.matk & Gk.true * uptri.matk) / sum(Gk.true * uptri.matk)
+FPRk <- sum(Gk.rc * uptri.matk & (uptri.matk - Gk.true * uptri.matk)) / sum(uptri.matk - Gk.true * uptri.matk)
+TPRg <- sum(G0.rc * uptri.mat0 & G.true * uptri.mat0) / sum(G.true * uptri.mat0)
+FPRg <- sum(G0.rc * uptri.mat0 & (uptri.mat0 - G.true * uptri.mat0) ) /sum(uptri.mat0 - G.true * uptri.mat0)
 
 return(data.frame(TPRk = TPRk, FPRk = FPRk, TPRg = TPRg, FPRg = FPRg))
 }
