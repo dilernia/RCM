@@ -19,18 +19,6 @@ Numeric BIC value
 \description{
 This function calculates the BIC for the random covariance model (RCM)
 }
-\examples{
-# Generate data
-set.seed(1994)
-myData <- rccSim(G = 1, clustSize = 10, p = 10, n = 100, overlap = 0.50, rho = 0.10)
-
-# Analyze with RCM
-rcmRes <- randCov(myData$simDat, lambda1 = 0.01, lambda2 = 0.01, lambda3 = 0, delta = 0.0001)
-
-# Calculate BIC for the RCM
-bic_cal(x = myData$simDat, Omegas = rcmRes$Omegas)
-
-}
 \author{
 Lin Zhang
 }

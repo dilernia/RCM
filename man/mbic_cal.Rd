@@ -25,19 +25,6 @@ Numeric Modified BIC value
 \description{
 This function calculates the modified BIC for the random covariance model (RCM)
 }
-\examples{
-# Generate data
-set.seed(1994)
-myData <- rccSim(G = 1, clustSize = 10, p = 10, n = 100, overlap = 0.50, rho = 0.10)
-
-# Analyze with RCM
-rcmRes <- randCov(myData$simDat, lambda1 = 0.01, lambda2 = 0.01, lambda3 = 0, delta = 0.0001)
-
-# Calculate modified BIC for the RCM
-mbic_cal(x = myData$simDat, Omega0 = rcmRes$Omega0, Omegas = rcmRes$Omegas,
-         lambda2 = 0.01)
-
-}
 \author{
 Lin Zhang
 }

@@ -1,0 +1,25 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1593116393952.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "2852805696",
+    "id" : "59A5BAA8",
+    "lastKnownWriteTime" : 1593116393,
+    "last_content_update" : 1593116393,
+    "path" : "C:/Users/Owner/AppData/Local/Temp/Temp1_rcm.zip/data_generation.R",
+    "project_path" : null,
+    "properties" : {
+        "cursorPosition" : "86,13",
+        "scrollLine" : "0"
+    },
+    "read_only" : false,
+    "read_only_alternatives" : [
+    ],
+    "relative_order" : 6,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}

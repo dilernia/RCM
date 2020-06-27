@@ -1716,7 +1716,7 @@ div.tocify {
 <h2>Simulating Data</h2>
 <p>We simulate an example data set for <span class="math inline">\(K=8\)</span> total subjects. For each subject, we generate <span class="math inline">\(n=50\)</span> observations for <span class="math inline">\(p=100\)</span> variables with approximately <span class="math inline">\(\rho = 20\%\)</span> of network connections differing from their shared group-level network.</p>
 <div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" title="1"><span class="co"># Generate individual variants with rho=0.2 and errors [-0.1,0.1] for common edges</span></a>
-<a class="sourceLine" id="cb2-2" title="2"><span class="kw">set.seed</span>(<span class="dv">1994</span>)</a>
+<a class="sourceLine" id="cb2-2" title="2"><span class="kw">set.seed</span>(<span class="dv">1999</span>)</a>
 <a class="sourceLine" id="cb2-3" title="3"><span class="kw">rm</span>(<span class="dt">list =</span> <span class="kw">ls</span>())</a>
 <a class="sourceLine" id="cb2-4" title="4"></a>
 <a class="sourceLine" id="cb2-5" title="5">p &lt;-<span class="st"> </span><span class="dv">100</span></a>
@@ -1865,8 +1865,8 @@ div.tocify {
 <a class="sourceLine" id="cb7-54" title="54">    <span class="kw">cat</span>(<span class="st">&#39;lam2 =&#39;</span>, lams.cand[j, <span class="dv">2</span>],<span class="st">&#39;is done </span><span class="ch">\n</span><span class="st">&#39;</span>)</a>
 <a class="sourceLine" id="cb7-55" title="55">  }</a>
 <a class="sourceLine" id="cb7-56" title="56">  }  <span class="co"># end of loop for all lambdas</span></a></code></pre></div>
-<pre><code>## Failed to converge for lambda1 = 0.202 , lambda2 = 800 , lambda3 = 1e-04 delta0 = 0.001120079 , deltaK = 0.001126386Failed to converge for lambda1 = 0.303 , lambda2 = 800 , lambda3 = 1e-04 delta0 = 0.001307497 , deltaK = 0.001312668Failed to converge for lambda1 = 0.404 , lambda2 = 800 , lambda3 = 1e-04 delta0 = 0.001302 , deltaK = 0.001306273Failed to converge for lambda1 = 0.505 , lambda2 = 800 , lambda3 = 1e-04 delta0 = 0.001206684 , deltaK = 0.001211353Failed to converge for lambda1 = 0.606 , lambda2 = 800 , lambda3 = 1e-04 delta0 = 0.001189168 , deltaK = 0.001193344Failed to converge for lambda1 = 0.808 , lambda2 = 800 , lambda3 = 1e-04 delta0 = 0.001271801 , deltaK = 0.00127675Failed to converge for lambda1 = 1.01 , lambda2 = 800 , lambda3 = 1e-04 delta0 = 0.001352738 , deltaK = 0.001357596Failed to converge for lambda1 = 1.515 , lambda2 = 800 , lambda3 = 1e-04 delta0 = 0.001424728 , deltaK = 0.001429018Failed to converge for lambda1 = 2.02 , lambda2 = 800 , lambda3 = 1e-04 delta0 = 0.001407111 , deltaK = 0.001410758lam2 = 100 is done 
-## Failed to converge for lambda1 = 0.284 , lambda2 = 560 , lambda3 = 1e-04 delta0 = 0.00101358 , deltaK = 0.001017637Failed to converge for lambda1 = 0.71 , lambda2 = 560 , lambda3 = 1e-04 delta0 = 0.001003732 , deltaK = 0.001009137Failed to converge for lambda1 = 1.065 , lambda2 = 560 , lambda3 = 1e-04 delta0 = 0.001092165 , deltaK = 0.001097177Failed to converge for lambda1 = 1.42 , lambda2 = 560 , lambda3 = 1e-04 delta0 = 0.001104997 , deltaK = 0.001109415lam2 = 70 is done</code></pre>
+<pre><code>## Failed to converge for lambda1 = 0.202 , lambda2 = 800 , lambda3 = 1e-04 delta0 = 0.001289708 , deltaK = 0.00129296Failed to converge for lambda1 = 0.303 , lambda2 = 800 , lambda3 = 1e-04 delta0 = 0.001444297 , deltaK = 0.001448523Failed to converge for lambda1 = 0.404 , lambda2 = 800 , lambda3 = 1e-04 delta0 = 0.00139495 , deltaK = 0.001398272Failed to converge for lambda1 = 0.505 , lambda2 = 800 , lambda3 = 1e-04 delta0 = 0.001223098 , deltaK = 0.001229977Failed to converge for lambda1 = 0.606 , lambda2 = 800 , lambda3 = 1e-04 delta0 = 0.001199898 , deltaK = 0.001204004Failed to converge for lambda1 = 0.808 , lambda2 = 800 , lambda3 = 1e-04 delta0 = 0.001315876 , deltaK = 0.001321878Failed to converge for lambda1 = 1.01 , lambda2 = 800 , lambda3 = 1e-04 delta0 = 0.00139612 , deltaK = 0.001401987Failed to converge for lambda1 = 1.515 , lambda2 = 800 , lambda3 = 1e-04 delta0 = 0.001463039 , deltaK = 0.001468178Failed to converge for lambda1 = 2.02 , lambda2 = 800 , lambda3 = 1e-04 delta0 = 0.001439652 , deltaK = 0.001443995lam2 = 100 is done 
+## Failed to converge for lambda1 = 0.213 , lambda2 = 560 , lambda3 = 1e-04 delta0 = 0.001084997 , deltaK = 0.001088683Failed to converge for lambda1 = 0.284 , lambda2 = 560 , lambda3 = 1e-04 delta0 = 0.001112608 , deltaK = 0.001117157Failed to converge for lambda1 = 0.355 , lambda2 = 560 , lambda3 = 1e-04 delta0 = 0.001058434 , deltaK = 0.001063522Failed to converge for lambda1 = 0.71 , lambda2 = 560 , lambda3 = 1e-04 delta0 = 0.001036959 , deltaK = 0.001043521Failed to converge for lambda1 = 1.065 , lambda2 = 560 , lambda3 = 1e-04 delta0 = 0.001123407 , deltaK = 0.001129444Failed to converge for lambda1 = 1.42 , lambda2 = 560 , lambda3 = 1e-04 delta0 = 0.001132608 , deltaK = 0.001137898lam2 = 70 is done</code></pre>
 <div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb9-1" title="1"><span class="co"># Optimal results for BIC</span></a>
 <a class="sourceLine" id="cb9-2" title="2">Omega0.bic &lt;-<span class="st"> </span>Omega0.est[ , , <span class="kw">which.min</span>(bic.rc)]</a>
 <a class="sourceLine" id="cb9-3" title="3">Omegas.bic &lt;-<span class="st"> </span>Omegas.est[ , , , <span class="kw">which.min</span>(bic.rc)]</a>
@@ -1890,7 +1890,7 @@ div.tocify {
 <a class="sourceLine" id="cb10-10" title="10">G.true &lt;-<span class="st"> </span>(<span class="kw">round</span>(Omega0g, <span class="dv">3</span>) <span class="op">!=</span><span class="st"> </span><span class="dv">0</span>) <span class="op">-</span><span class="st"> </span><span class="kw">diag</span>(p)</a>
 <a class="sourceLine" id="cb10-11" title="11">G0.rc &lt;-<span class="st"> </span>(<span class="kw">round</span>(Omegags, <span class="dv">3</span>) <span class="op">!=</span><span class="st"> </span><span class="dv">0</span>) <span class="op">-</span><span class="st"> </span><span class="kw">diag</span>(p)</a>
 <a class="sourceLine" id="cb10-12" title="12"></a>
-<a class="sourceLine" id="cb10-13" title="13">uptri.mat0 &lt;-<span class="st"> </span><span class="kw">diag</span>(<span class="dv">0</span>,p) </a>
+<a class="sourceLine" id="cb10-13" title="13">uptri.mat0 &lt;-<span class="st"> </span><span class="kw">diag</span>(<span class="dv">0</span>, p) </a>
 <a class="sourceLine" id="cb10-14" title="14">uptri.mat0[<span class="kw">upper.tri</span>(<span class="kw">diag</span>(p))] &lt;-<span class="st"> </span><span class="dv">1</span></a>
 <a class="sourceLine" id="cb10-15" title="15">uptri.matk &lt;-<span class="st"> </span><span class="kw">array</span>(uptri.mat0, <span class="kw">c</span>(p, p, K))</a>
 <a class="sourceLine" id="cb10-16" title="16"></a>
@@ -1925,16 +1925,16 @@ FPRg
 <tbody>
 <tr>
 <td style="text-align:right;">
-0.862
+0.794
 </td>
 <td style="text-align:right;">
-0.014
+0.007
 </td>
 <td style="text-align:right;">
-0.909
+0.838
 </td>
 <td style="text-align:right;">
-0.001
+0
 </td>
 </tr>
 </tbody>
@@ -1964,16 +1964,16 @@ FPRg
 <tbody>
 <tr>
 <td style="text-align:right;">
-0.961
+0.949
 </td>
 <td style="text-align:right;">
-0.14
+0.05
 </td>
 <td style="text-align:right;">
-1
+0.99
 </td>
 <td style="text-align:right;">
-0.053
+0.016
 </td>
 </tr>
 </tbody>

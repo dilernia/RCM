@@ -32,17 +32,6 @@ This function implements the Random Covariance Model (RCM) for joint estimation 
 multiple sparse precision matrices. Optimization is conducted using block
 coordinate descent.
 }
-\examples{
-# Generate data with 5 subjects, 15 variables for each subject,
-# 100 observations for each variable for each subject,
-# and 10\% of differential connections
-# within each group
-myData <- rccSim(G = 1, clustSize = 5, p = 15, n = 100, rho = 0.10)
-
-# Analyze simulated data with RCM
-result <- randCov(x = myData$simDat, lambda1 = 0.30, lambda2 = 0.10, lambda3 = 0.001, delta = 0.001)
-
-}
 \references{
 Zhang, Lin, Andrew DiLernia, Karina Quevedo, Jazmin Camchong, Kelvin Lim, and Wei Pan.
 "A Random Covariance Model for Bi-level Graphical Modeling with Application to Resting-state FMRI Data." 2019. https://arxiv.org/pdf/1910.00103.pdf

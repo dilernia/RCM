@@ -1,0 +1,114 @@
+## calculate BIC values for simulation result ##
+rm(list=ls())
+source('D:/1. Research/Project Dynamic Graphs/RandCov/Rcodes/bic_cal.R')
+
+th <- 0.0001
+
+# define function to calculate FDR and MCC based on TP/TN/FP/FN
+fdr.cal <- function(tp,tn,fp,fn){
+    return(fp/(fp+tp))
+}
+mcc.cal <- function(tp,tn,fp,fn){
+    return((tp*tn-fp*fn)/sqrt((tp+fp)*(tp+fn)*(tn+fp)*(tn+fn)))
+}
+
+
+for(Kdev in c(2,4)) {
+    
+if(Kdev==0) setwd('D:/1. Research/Project Dynamic Graphs/RandCov/simu_rev/Deviants/Kdev0/')
+if(Kdev==2) setwd('D:/1. Research/Project Dynamic Graphs/RandCov/simu_rev/Deviants/Kdev2/')
+if(Kdev==4) setwd('D:/1. Research/Project Dynamic Graphs/RandCov/simu_rev/Deviants/Kdev4/')
+
+load('sim_data.rda')
+p<- dim(G.true)[1]; K <- dim(Gk.true)[3]; B <- length(sim.dat);
+
+uptri.mat0 <- diag(0,p); uptri.mat0[upper.tri(diag(p))] <- 1
+uptri.matk <- array(uptri.mat0,c(p,p,K))
+
+## RandCov
+
+files <- list.files('randcov_res/')
+bb <- sort(as.numeric(gsub('.rda','',gsub('randcov_sim','',files))))
+
+load(paste0('randcov_res/',files[1]))[]
+nlams <- nrow(lams.cand)
+
+bic.rc <- bic3.rc <- matrix(NA,nlams,B)
+for(b in bb) {
+    
+    x <- sim.dat[[b]]
+    load(paste0('randcov_res/randcov_sim',b,'.rda'))
+    
+    for(j in 1:nlams) {
+        
+        lam2 <- lams.cand[j,2]
+        
+        Omegas.1 <- round(Omegas.est[,,,j],3)
+        Omega0.1 <- round(Omega0.est[,,j],3)
+        
+        Gk.1 <- (abs(Omegas.1) > th) - array(diag(p),c(p,p,K))
+        G0.1 <- (abs(Omega0.1) > th) - diag(p)
+        
+        bic.rc[j,b] <- bic_cal(x,Omegas.1,Gk.1)
+        bic3.rc[j,b] <- bic3_cal(x,Omegas.1,lam2,G0.1,Gk.1)
+    }
+    if (b%%10==0) cat('sim', b, 'is done \n')
+}
+
+#cts1 <- table(apply(bic3.rc,2,which.min)) #8, 7, 7,
+#cts2 <- table(apply(bic.rc,2,which.min)) #10, 10, 12
+cts1 <- apply(bic3.rc,2,which.min)
+cts2 <- apply(bic.rc,2,which.min)
+
+# j.rc <- as.numeric(c(names(sort(cts1,decreasing=T))[1],names(sort(cts2,decreasing=T))[1]))
+# bic_min.rc <- c(mean(bic3.rc[j.rc[1],]),mean(bic.rc[j.rc[2],]))
+j.rc <- cbind(cts1,cts2)
+bic_min.rc <- c(mean(apply(bic3.rc,2,min)),mean(apply(bic.rc,2,min)))
+
+ttp.tmp <- tfp.tmp <- gtp.tmp <- gfp.tmp <- 
+    tfd.tmp <- tmc.tmp <- gfd.tmp <- gmc.tmp <- 
+    fnorm.tmp <- l1norm.tmp <- matrix(NA,2,B)
+
+for(b in bb) {
+    
+    x <- sim.dat[[b]]
+    load(paste0('randcov_res/randcov_sim',b,'.rda'))
+    
+    for(j in 1:2) {
+        
+        Omegas.1 <- round(Omegas.est[,,,j.rc[b,j]],3)
+        Omega0.1 <- round(Omega0.est[,,j.rc[b,j]],3)
+        
+        Gk.1 <- (abs(Omegas.1) > th) - array(diag(p),c(p,p,K))
+        G0.1 <- (abs(Omega0.1) > th) - diag(p)
+        
+        ttp <- sum( Gk.1*uptri.matk & Gk.true )
+        tfn <- sum(Gk.true) - ttp
+        tfp <- sum( Gk.1*uptri.matk & (uptri.matk-Gk.true) )
+        ttn <- sum(uptri.matk-Gk.true) - tfp
+        gtp <- sum( G0.1*uptri.mat0 & G.true )
+        gfn <- sum(G.true) - gtp
+        gfp <- sum( G0.1*uptri.mat0 & (uptri.mat0-G.true) )
+        gtn <- sum(uptri.mat0-G.true) - gfp
+            
+        ttp.tmp[j,b] <- ttp/(ttp+tfn)
+        tfp.tmp[j,b] <- tfp/(tfp+ttn)
+        gtp.tmp[j,b] <- gtp/(gtp+gfn)
+        gfp.tmp[j,b] <- gfp/(gfp+gtn)
+        
+        tfd.tmp[j,b] <- fdr.cal(ttp,ttn,tfp,tfn)
+        tmc.tmp[j,b] <- mcc.cal(ttp,ttn,tfp,tfn)
+        gfd.tmp[j,b] <- fdr.cal(gtp,gtn,gfp,gfn)
+        gmc.tmp[j,b] <- mcc.cal(gtp,gtn,gfp,gfn)
+        
+        fnorm.tmp[j,b] <- mean(apply(Omegas.1 - Omegas.true,3,norm,type='f'))
+        l1norm.tmp[j,b] <- mean(apply(abs(Omegas.1 - Omegas.true),3,sum))
+    }
+    if (b%%10==0) cat('sim', b, 'is done \n')
+}
+
+rc.pool <- list(ttp=ttp.tmp,tfp=tfp.tmp,gtp=gtp.tmp,gfp=gfp.tmp,
+                tfd=tfd.tmp,tmc=tmc.tmp,gfd=gfd.tmp,gmc=gmc.tmp,
+                fnorm=fnorm.tmp,l1norm=l1norm.tmp)
+round(sapply(rc.pool,function(x) rowMeans(x,na.rm=TRUE)),4)
+
