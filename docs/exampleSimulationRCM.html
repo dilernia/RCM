@@ -1320,15 +1320,6 @@ window.initializeCodeFolding = function(show) {
 
 }
 </script>
-<script>$(document).ready(function(){
-    if (typeof $('[data-toggle="tooltip"]').tooltip === 'function') {
-        $('[data-toggle="tooltip"]').tooltip();
-    }
-    if ($('[data-toggle="popover"]').popover === 'function') {
-        $('[data-toggle="popover"]').popover();
-    }
-});
-</script>
 
 
 <style type="text/css">code{white-space: pre;}</style>
@@ -1715,79 +1706,92 @@ div.tocify {
 <div id="simulating-data" class="section level2 tabset tabset-fade">
 <h2>Simulating Data</h2>
 <p>We simulate an example data set for <span class="math inline">\(K=8\)</span> total subjects. For each subject, we generate <span class="math inline">\(n=50\)</span> observations for <span class="math inline">\(p=100\)</span> variables with approximately <span class="math inline">\(\rho = 20\%\)</span> of network connections differing from their shared group-level network.</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" title="1"><span class="co"># Generate individual variants with rho=0.2 and errors [-0.1,0.1] for common edges</span></a>
-<a class="sourceLine" id="cb2-2" title="2"><span class="kw">set.seed</span>(<span class="dv">123456</span>)</a>
-<a class="sourceLine" id="cb2-3" title="3"><span class="kw">rm</span>(<span class="dt">list =</span> <span class="kw">ls</span>())</a>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" title="1"><span class="kw">set.seed</span>(<span class="dv">123456</span>)</a>
+<a class="sourceLine" id="cb2-2" title="2"><span class="co"># file to specify graphs G and data for simulation study </span></a>
+<a class="sourceLine" id="cb2-3" title="3"><span class="co"># generate individual variants with rho=0.2 and errors [-0.1,0.1] for common edges</span></a>
 <a class="sourceLine" id="cb2-4" title="4"></a>
-<a class="sourceLine" id="cb2-5" title="5">p &lt;-<span class="st"> </span><span class="dv">100</span></a>
+<a class="sourceLine" id="cb2-5" title="5"><span class="kw">rm</span>(<span class="dt">list=</span><span class="kw">ls</span>())</a>
 <a class="sourceLine" id="cb2-6" title="6"></a>
-<a class="sourceLine" id="cb2-7" title="7"><span class="co"># common graph </span></a>
-<a class="sourceLine" id="cb2-8" title="8">G &lt;-<span class="st"> </span><span class="kw">diag</span>(<span class="dv">0</span>,p)</a>
-<a class="sourceLine" id="cb2-9" title="9"></a>
-<a class="sourceLine" id="cb2-10" title="10">G[<span class="dv">1</span>, <span class="dv">2</span><span class="op">:</span><span class="dv">14</span>] &lt;-<span class="st"> </span>G[<span class="dv">12</span>, <span class="dv">15</span>] &lt;-<span class="st"> </span>G[<span class="dv">13</span>, <span class="dv">16</span>] &lt;-<span class="st"> </span>G[<span class="dv">14</span>, <span class="dv">17</span>] &lt;-<span class="st"> </span>G[<span class="dv">17</span>, <span class="dv">18</span>] &lt;-<span class="st"> </span><span class="dv">1</span></a>
-<a class="sourceLine" id="cb2-11" title="11">G[<span class="dv">1</span>, <span class="dv">19</span>] &lt;-<span class="st"> </span>G[<span class="dv">19</span>, <span class="dv">20</span>] &lt;-<span class="st"> </span>G[<span class="dv">19</span>, <span class="dv">21</span>] &lt;-<span class="st"> </span>G[<span class="dv">21</span>, <span class="dv">22</span><span class="op">:</span><span class="dv">23</span>] &lt;-<span class="st"> </span>G[<span class="dv">23</span>, <span class="dv">24</span>] &lt;-<span class="st"> </span><span class="dv">1</span></a>
-<a class="sourceLine" id="cb2-12" title="12">G[<span class="dv">1</span>, <span class="dv">25</span>] &lt;-<span class="st"> </span>G[<span class="dv">25</span>, <span class="dv">26</span>] &lt;-<span class="st"> </span><span class="dv">1</span></a>
-<a class="sourceLine" id="cb2-13" title="13"></a>
-<a class="sourceLine" id="cb2-14" title="14">G[<span class="dv">26</span>, <span class="dv">27</span><span class="op">:</span><span class="dv">33</span>] &lt;-<span class="st"> </span>G[<span class="dv">33</span>, <span class="dv">34</span><span class="op">:</span><span class="dv">35</span>] &lt;-<span class="st"> </span><span class="dv">1</span></a>
-<a class="sourceLine" id="cb2-15" title="15">G[<span class="dv">26</span>, <span class="dv">36</span>] &lt;-<span class="st"> </span>G[<span class="dv">36</span>, <span class="dv">37</span><span class="op">:</span><span class="dv">39</span>] &lt;-<span class="st"> </span>G[<span class="dv">38</span>, <span class="dv">40</span>] &lt;-<span class="st"> </span>G[<span class="dv">39</span>, <span class="dv">41</span>] &lt;-<span class="st"> </span><span class="dv">1</span></a>
-<a class="sourceLine" id="cb2-16" title="16">G[<span class="dv">26</span>, <span class="dv">42</span>] &lt;-<span class="st"> </span>G[<span class="dv">42</span>, <span class="dv">43</span><span class="op">:</span><span class="dv">44</span>] &lt;-<span class="st"> </span>G[<span class="dv">44</span>,<span class="dv">45</span>] &lt;-<span class="st"> </span><span class="dv">1</span></a>
-<a class="sourceLine" id="cb2-17" title="17">G[<span class="dv">26</span>, <span class="dv">46</span>] &lt;-<span class="st"> </span>G[<span class="dv">46</span>, <span class="dv">47</span>] &lt;-<span class="st"> </span>G[<span class="dv">47</span>, <span class="dv">48</span>] &lt;-<span class="st"> </span>G[<span class="dv">48</span>, <span class="dv">49</span><span class="op">:</span><span class="dv">52</span>] &lt;-<span class="st"> </span>G[<span class="dv">52</span>, <span class="dv">53</span>] &lt;-<span class="st"> </span><span class="dv">1</span></a>
-<a class="sourceLine" id="cb2-18" title="18">G[<span class="dv">26</span>, <span class="dv">54</span>] &lt;-<span class="st"> </span><span class="dv">1</span></a>
-<a class="sourceLine" id="cb2-19" title="19"></a>
-<a class="sourceLine" id="cb2-20" title="20">G[<span class="dv">54</span>, <span class="dv">55</span><span class="op">:</span><span class="dv">62</span>] &lt;-<span class="st"> </span>G[<span class="dv">59</span>, <span class="dv">63</span>] &lt;-<span class="st"> </span>G[<span class="dv">60</span>, <span class="dv">64</span>] &lt;-<span class="st"> </span>G[<span class="dv">61</span>, <span class="dv">65</span>] &lt;-<span class="st"> </span>G[<span class="dv">62</span>, <span class="dv">66</span>] &lt;-<span class="st"> </span><span class="dv">1</span></a>
-<a class="sourceLine" id="cb2-21" title="21">G[<span class="dv">54</span>, <span class="dv">67</span>] &lt;-<span class="st"> </span>G[<span class="dv">67</span>, <span class="dv">68</span><span class="op">:</span><span class="dv">72</span>] &lt;-<span class="st"> </span><span class="dv">1</span></a>
-<a class="sourceLine" id="cb2-22" title="22">G[<span class="dv">54</span>, <span class="dv">73</span>] &lt;-<span class="st"> </span>G[<span class="dv">73</span>, <span class="dv">74</span><span class="op">:</span><span class="dv">76</span>] &lt;-<span class="st"> </span>G[<span class="dv">76</span>, <span class="dv">77</span>] &lt;-<span class="st"> </span><span class="dv">1</span></a>
-<a class="sourceLine" id="cb2-23" title="23">G[<span class="dv">54</span>, <span class="dv">78</span>] &lt;-<span class="st"> </span><span class="dv">1</span></a>
-<a class="sourceLine" id="cb2-24" title="24"></a>
-<a class="sourceLine" id="cb2-25" title="25">G[<span class="dv">78</span>, <span class="dv">79</span><span class="op">:</span><span class="dv">82</span>] &lt;-<span class="st"> </span>G[<span class="dv">81</span>, <span class="dv">83</span>] &lt;-<span class="st"> </span>G[<span class="dv">82</span>, <span class="dv">84</span><span class="op">:</span><span class="dv">85</span>] &lt;-<span class="st"> </span><span class="dv">1</span></a>
-<a class="sourceLine" id="cb2-26" title="26">G[<span class="dv">78</span>, <span class="dv">86</span>] &lt;-<span class="st"> </span><span class="dv">1</span></a>
-<a class="sourceLine" id="cb2-27" title="27">G[<span class="dv">86</span>, <span class="dv">87</span><span class="op">:</span><span class="dv">92</span>] &lt;-<span class="st"> </span>G[<span class="dv">90</span>, <span class="dv">93</span>] &lt;-<span class="st"> </span>G[<span class="dv">91</span>, <span class="dv">94</span>] &lt;-<span class="st"> </span>G[<span class="dv">92</span>, <span class="dv">95</span><span class="op">:</span><span class="dv">96</span>] &lt;-<span class="st"> </span><span class="dv">1</span></a>
-<a class="sourceLine" id="cb2-28" title="28">G[<span class="dv">86</span>, <span class="dv">97</span>] &lt;-<span class="st"> </span>G[<span class="dv">97</span>, <span class="dv">98</span><span class="op">:</span><span class="dv">99</span>] &lt;-<span class="st"> </span>G[<span class="dv">99</span>, <span class="dv">100</span>] &lt;-<span class="st"> </span><span class="dv">1</span></a>
-<a class="sourceLine" id="cb2-29" title="29"></a>
-<a class="sourceLine" id="cb2-30" title="30">temp &lt;-<span class="st"> </span><span class="kw">diag</span>(<span class="fl">0.5</span>, p) <span class="op">+</span><span class="st"> </span>G <span class="op">*</span><span class="st"> </span><span class="kw">matrix</span>(<span class="kw">runif</span>(p <span class="op">*</span><span class="st"> </span>p, <span class="fl">0.5</span>, <span class="dv">1</span>) <span class="op">*</span><span class="st"> </span><span class="kw">sample</span>(<span class="kw">c</span>(<span class="op">-</span><span class="dv">1</span>, <span class="dv">1</span>), p <span class="op">*</span><span class="st"> </span>p, <span class="dt">replace =</span> <span class="ot">TRUE</span>), p, p)</a>
-<a class="sourceLine" id="cb2-31" title="31">temp2 &lt;-<span class="st"> </span>temp <span class="op">+</span><span class="st"> </span><span class="kw">t</span>(temp) <span class="op">+</span><span class="st"> </span><span class="kw">diag</span>(<span class="kw">rowSums</span>(G <span class="op">+</span><span class="st"> </span><span class="kw">t</span>(G)) <span class="op">/</span><span class="st"> </span><span class="dv">2</span>)</a>
-<a class="sourceLine" id="cb2-32" title="32"><span class="kw">any</span>(<span class="kw">eigen</span>(temp2, <span class="dt">only.values =</span> T)<span class="op">$</span>values <span class="op">&lt;=</span><span class="st"> </span><span class="dv">0</span>)</a></code></pre></div>
+<a class="sourceLine" id="cb2-7" title="7">p =<span class="st"> </span><span class="dv">100</span></a>
+<a class="sourceLine" id="cb2-8" title="8"></a>
+<a class="sourceLine" id="cb2-9" title="9"><span class="co"># common graph </span></a>
+<a class="sourceLine" id="cb2-10" title="10">G =<span class="st"> </span><span class="kw">diag</span>(<span class="dv">0</span>,p)</a>
+<a class="sourceLine" id="cb2-11" title="11"></a>
+<a class="sourceLine" id="cb2-12" title="12">G[<span class="dv">1</span>,<span class="dv">2</span><span class="op">:</span><span class="dv">14</span>] &lt;-<span class="st"> </span>G[<span class="dv">12</span>,<span class="dv">15</span>] &lt;-<span class="st"> </span>G[<span class="dv">13</span>,<span class="dv">16</span>] &lt;-<span class="st"> </span>G[<span class="dv">14</span>,<span class="dv">17</span>] &lt;-<span class="st"> </span>G[<span class="dv">17</span>,<span class="dv">18</span>] &lt;-<span class="st"> </span><span class="dv">1</span></a>
+<a class="sourceLine" id="cb2-13" title="13">G[<span class="dv">1</span>,<span class="dv">19</span>] &lt;-<span class="st"> </span>G[<span class="dv">19</span>,<span class="dv">20</span>] &lt;-<span class="st"> </span>G[<span class="dv">19</span>,<span class="dv">21</span>] &lt;-<span class="st"> </span>G[<span class="dv">21</span>,<span class="dv">22</span><span class="op">:</span><span class="dv">23</span>] &lt;-<span class="st"> </span>G[<span class="dv">23</span>,<span class="dv">24</span>] &lt;-<span class="st"> </span><span class="dv">1</span></a>
+<a class="sourceLine" id="cb2-14" title="14">G[<span class="dv">1</span>,<span class="dv">25</span>] &lt;-<span class="st"> </span>G[<span class="dv">25</span>,<span class="dv">26</span>] &lt;-<span class="st"> </span><span class="dv">1</span></a>
+<a class="sourceLine" id="cb2-15" title="15"></a>
+<a class="sourceLine" id="cb2-16" title="16">G[<span class="dv">26</span>,<span class="dv">27</span><span class="op">:</span><span class="dv">33</span>] &lt;-<span class="st"> </span>G[<span class="dv">33</span>,<span class="dv">34</span><span class="op">:</span><span class="dv">35</span>] &lt;-<span class="st"> </span><span class="dv">1</span></a>
+<a class="sourceLine" id="cb2-17" title="17">G[<span class="dv">26</span>,<span class="dv">36</span>] &lt;-<span class="st"> </span>G[<span class="dv">36</span>,<span class="dv">37</span><span class="op">:</span><span class="dv">39</span>] &lt;-<span class="st"> </span>G[<span class="dv">38</span>,<span class="dv">40</span>] &lt;-<span class="st"> </span>G[<span class="dv">39</span>,<span class="dv">41</span>] &lt;-<span class="st"> </span><span class="dv">1</span></a>
+<a class="sourceLine" id="cb2-18" title="18">G[<span class="dv">26</span>,<span class="dv">42</span>] &lt;-<span class="st"> </span>G[<span class="dv">42</span>,<span class="dv">43</span><span class="op">:</span><span class="dv">44</span>] &lt;-<span class="st"> </span>G[<span class="dv">44</span>,<span class="dv">45</span>] &lt;-<span class="st"> </span><span class="dv">1</span></a>
+<a class="sourceLine" id="cb2-19" title="19">G[<span class="dv">26</span>,<span class="dv">46</span>] &lt;-<span class="st"> </span>G[<span class="dv">46</span>,<span class="dv">47</span>] &lt;-<span class="st"> </span>G[<span class="dv">47</span>,<span class="dv">48</span>] &lt;-<span class="st"> </span>G[<span class="dv">48</span>,<span class="dv">49</span><span class="op">:</span><span class="dv">52</span>] &lt;-<span class="st"> </span>G[<span class="dv">52</span>,<span class="dv">53</span>] &lt;-<span class="st"> </span><span class="dv">1</span></a>
+<a class="sourceLine" id="cb2-20" title="20">G[<span class="dv">26</span>,<span class="dv">54</span>] &lt;-<span class="st"> </span><span class="dv">1</span></a>
+<a class="sourceLine" id="cb2-21" title="21"></a>
+<a class="sourceLine" id="cb2-22" title="22">G[<span class="dv">54</span>,<span class="dv">55</span><span class="op">:</span><span class="dv">62</span>] &lt;-<span class="st"> </span>G[<span class="dv">59</span>,<span class="dv">63</span>] &lt;-<span class="st"> </span>G[<span class="dv">60</span>,<span class="dv">64</span>] &lt;-<span class="st"> </span>G[<span class="dv">61</span>,<span class="dv">65</span>] &lt;-<span class="st"> </span>G[<span class="dv">62</span>,<span class="dv">66</span>] &lt;-<span class="st"> </span><span class="dv">1</span></a>
+<a class="sourceLine" id="cb2-23" title="23">G[<span class="dv">54</span>,<span class="dv">67</span>] &lt;-<span class="st"> </span>G[<span class="dv">67</span>,<span class="dv">68</span><span class="op">:</span><span class="dv">72</span>] &lt;-<span class="st"> </span><span class="dv">1</span></a>
+<a class="sourceLine" id="cb2-24" title="24">G[<span class="dv">54</span>,<span class="dv">73</span>] &lt;-<span class="st"> </span>G[<span class="dv">73</span>,<span class="dv">74</span><span class="op">:</span><span class="dv">76</span>] &lt;-<span class="st"> </span>G[<span class="dv">76</span>,<span class="dv">77</span>] &lt;-<span class="st"> </span><span class="dv">1</span></a>
+<a class="sourceLine" id="cb2-25" title="25">G[<span class="dv">54</span>,<span class="dv">78</span>] &lt;-<span class="st"> </span><span class="dv">1</span></a>
+<a class="sourceLine" id="cb2-26" title="26"></a>
+<a class="sourceLine" id="cb2-27" title="27">G[<span class="dv">78</span>,<span class="dv">79</span><span class="op">:</span><span class="dv">82</span>] &lt;-<span class="st"> </span>G[<span class="dv">81</span>,<span class="dv">83</span>] &lt;-<span class="st"> </span>G[<span class="dv">82</span>,<span class="dv">84</span><span class="op">:</span><span class="dv">85</span>] &lt;-<span class="st"> </span><span class="dv">1</span></a>
+<a class="sourceLine" id="cb2-28" title="28">G[<span class="dv">78</span>,<span class="dv">86</span>] &lt;-<span class="st"> </span><span class="dv">1</span></a>
+<a class="sourceLine" id="cb2-29" title="29">G[<span class="dv">86</span>,<span class="dv">87</span><span class="op">:</span><span class="dv">92</span>] &lt;-<span class="st"> </span>G[<span class="dv">90</span>,<span class="dv">93</span>] &lt;-<span class="st"> </span>G[<span class="dv">91</span>,<span class="dv">94</span>] &lt;-<span class="st"> </span>G[<span class="dv">92</span>,<span class="dv">95</span><span class="op">:</span><span class="dv">96</span>] &lt;-<span class="st"> </span><span class="dv">1</span></a>
+<a class="sourceLine" id="cb2-30" title="30">G[<span class="dv">86</span>,<span class="dv">97</span>] &lt;-<span class="st"> </span>G[<span class="dv">97</span>,<span class="dv">98</span><span class="op">:</span><span class="dv">99</span>] &lt;-<span class="st"> </span>G[<span class="dv">99</span>,<span class="dv">100</span>] &lt;-<span class="st"> </span><span class="dv">1</span></a>
+<a class="sourceLine" id="cb2-31" title="31"></a>
+<a class="sourceLine" id="cb2-32" title="32"></a>
+<a class="sourceLine" id="cb2-33" title="33"><span class="co"># library(igraph)</span></a>
+<a class="sourceLine" id="cb2-34" title="34"><span class="co"># g0 = graph.adjacency(G,mode=&quot;undirected&quot;)</span></a>
+<a class="sourceLine" id="cb2-35" title="35"><span class="co"># tkplot(g0, layout=layout.kamada.kawai,vertex.label=rep(&#39;&#39;,p),vertex.size=5,</span></a>
+<a class="sourceLine" id="cb2-36" title="36"><span class="co">#              vertex.color=&quot;gray80&quot;, canvas.width=650, canvas.height=600 )</span></a>
+<a class="sourceLine" id="cb2-37" title="37"></a>
+<a class="sourceLine" id="cb2-38" title="38"></a>
+<a class="sourceLine" id="cb2-39" title="39"></a>
+<a class="sourceLine" id="cb2-40" title="40">temp &lt;-<span class="st"> </span><span class="kw">diag</span>(<span class="fl">0.5</span>,p) <span class="op">+</span><span class="st"> </span>G<span class="op">*</span><span class="kw">matrix</span>(<span class="kw">runif</span>(p<span class="op">*</span>p,<span class="fl">0.5</span>,<span class="dv">1</span>)<span class="op">*</span><span class="kw">sample</span>(<span class="kw">c</span>(<span class="op">-</span><span class="dv">1</span>,<span class="dv">1</span>),p<span class="op">*</span>p,<span class="dt">replace=</span><span class="ot">TRUE</span>),p,p)</a>
+<a class="sourceLine" id="cb2-41" title="41">temp2 &lt;-<span class="st"> </span>temp <span class="op">+</span><span class="st"> </span><span class="kw">t</span>(temp) <span class="op">+</span><span class="st"> </span><span class="kw">diag</span>(<span class="kw">rowSums</span>(G<span class="op">+</span><span class="kw">t</span>(G))<span class="op">/</span><span class="dv">2</span>)</a>
+<a class="sourceLine" id="cb2-42" title="42"><span class="kw">any</span>(<span class="kw">eigen</span>(temp2,<span class="dt">only.values=</span>T)<span class="op">$</span>values <span class="op">&lt;=</span><span class="st"> </span><span class="dv">0</span>)</a></code></pre></div>
 <pre><code>## [1] FALSE</code></pre>
 <div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb4-1" title="1">Omega0.true &lt;-<span class="st"> </span><span class="kw">diag</span>(<span class="kw">diag</span>(temp2)<span class="op">^-</span><span class="fl">0.5</span>) <span class="op">%*%</span><span class="st"> </span>temp2 <span class="op">%*%</span><span class="st"> </span><span class="kw">diag</span>(<span class="kw">diag</span>(temp2)<span class="op">^-</span><span class="fl">0.5</span>)</a>
 <a class="sourceLine" id="cb4-2" title="2"></a>
-<a class="sourceLine" id="cb4-3" title="3"><span class="co"># Add/subtract individual specific edges</span></a>
-<a class="sourceLine" id="cb4-4" title="4">A &lt;-<span class="st"> </span><span class="kw">diag</span>(<span class="dv">0</span>, p) </a>
-<a class="sourceLine" id="cb4-5" title="5">A[<span class="kw">upper.tri</span>(A)] &lt;-<span class="st"> </span><span class="dv">1</span> </a>
-<a class="sourceLine" id="cb4-6" title="6">A &lt;-<span class="st"> </span>A<span class="op">-</span>G</a>
-<a class="sourceLine" id="cb4-7" title="7">ind<span class="fl">.0</span> &lt;-<span class="st"> </span><span class="kw">which</span>(A <span class="op">==</span><span class="st"> </span><span class="dv">1</span>)</a>
-<a class="sourceLine" id="cb4-8" title="8">ind<span class="fl">.1</span> &lt;-<span class="st"> </span><span class="kw">which</span>(G <span class="op">==</span><span class="st"> </span><span class="dv">1</span>)</a>
-<a class="sourceLine" id="cb4-9" title="9"></a>
-<a class="sourceLine" id="cb4-10" title="10">K &lt;-<span class="st"> </span><span class="dv">8</span> </a>
-<a class="sourceLine" id="cb4-11" title="11">Gk &lt;-<span class="st"> </span>Omegas.true &lt;-<span class="st"> </span><span class="kw">array</span>(<span class="dv">0</span>, <span class="kw">c</span>(p, p, K))</a>
-<a class="sourceLine" id="cb4-12" title="12"></a>
-<a class="sourceLine" id="cb4-13" title="13">dif.p &lt;-<span class="st"> </span><span class="fl">0.2</span> </a>
-<a class="sourceLine" id="cb4-14" title="14">es &lt;-<span class="st"> </span><span class="fl">0.1</span></a>
-<a class="sourceLine" id="cb4-15" title="15"></a>
-<a class="sourceLine" id="cb4-16" title="16"><span class="co"># Generating mechanism 1</span></a>
-<a class="sourceLine" id="cb4-17" title="17"><span class="cf">for</span>(k <span class="cf">in</span> <span class="dv">1</span><span class="op">:</span>K) {</a>
-<a class="sourceLine" id="cb4-18" title="18">  ind.ak &lt;-<span class="st"> </span><span class="kw">sample</span>(ind<span class="fl">.0</span>, <span class="kw">round</span>(<span class="kw">sum</span>(G) <span class="op">*</span><span class="st"> </span>dif.p))</a>
-<a class="sourceLine" id="cb4-19" title="19">  ind.dk &lt;-<span class="st"> </span><span class="kw">sample</span>(ind<span class="fl">.1</span>, <span class="kw">round</span>(<span class="kw">sum</span>(G) <span class="op">*</span><span class="st"> </span>dif.p))</a>
-<a class="sourceLine" id="cb4-20" title="20">  ind.sm &lt;-<span class="st"> </span><span class="kw">setdiff</span>(ind<span class="fl">.1</span>, ind.dk)</a>
-<a class="sourceLine" id="cb4-21" title="21">  G.ak &lt;-<span class="st"> </span>G.dk &lt;-<span class="st"> </span>G.sm &lt;-<span class="st"> </span><span class="kw">matrix</span>(<span class="dv">0</span>, p, p)</a>
-<a class="sourceLine" id="cb4-22" title="22">  G.ak[ind.ak] &lt;-<span class="st"> </span><span class="dv">1</span></a>
-<a class="sourceLine" id="cb4-23" title="23">  G.dk[ind.dk] &lt;-<span class="st"> </span><span class="dv">1</span></a>
-<a class="sourceLine" id="cb4-24" title="24">  G.sm[ind.sm] &lt;-<span class="st"> </span><span class="dv">1</span></a>
-<a class="sourceLine" id="cb4-25" title="25">  </a>
-<a class="sourceLine" id="cb4-26" title="26">  temp.k =<span class="st"> </span><span class="kw">matrix</span>(<span class="dv">0</span>, p, p)</a>
-<a class="sourceLine" id="cb4-27" title="27">  <span class="cf">while</span>(<span class="kw">any</span>(<span class="kw">eigen</span>(temp.k)<span class="op">$</span>values <span class="op">&lt;=</span><span class="st"> </span><span class="dv">0</span>)) {</a>
+<a class="sourceLine" id="cb4-3" title="3"><span class="co"># plot(sort(Omega0.true[Omega0.true != 0 &amp; Omega0.true &lt; 0.99]))</span></a>
+<a class="sourceLine" id="cb4-4" title="4"></a>
+<a class="sourceLine" id="cb4-5" title="5"></a>
+<a class="sourceLine" id="cb4-6" title="6"><span class="co"># add/subtract individual specific edges</span></a>
+<a class="sourceLine" id="cb4-7" title="7"></a>
+<a class="sourceLine" id="cb4-8" title="8">A =<span class="st"> </span><span class="kw">diag</span>(<span class="dv">0</span>,p); A[<span class="kw">upper.tri</span>(A)] =<span class="st"> </span><span class="dv">1</span>; A =<span class="st"> </span>A<span class="op">-</span>G;</a>
+<a class="sourceLine" id="cb4-9" title="9">ind<span class="fl">.0</span> &lt;-<span class="st"> </span><span class="kw">which</span>(A<span class="op">==</span><span class="dv">1</span>)</a>
+<a class="sourceLine" id="cb4-10" title="10">ind<span class="fl">.1</span> &lt;-<span class="st"> </span><span class="kw">which</span>(G<span class="op">==</span><span class="dv">1</span>)</a>
+<a class="sourceLine" id="cb4-11" title="11"></a>
+<a class="sourceLine" id="cb4-12" title="12">K =<span class="st"> </span><span class="dv">8</span> </a>
+<a class="sourceLine" id="cb4-13" title="13">Gk &lt;-<span class="st"> </span>Omegas.true &lt;-<span class="st"> </span><span class="kw">array</span>(<span class="dv">0</span>,<span class="kw">c</span>(p,p,K))</a>
+<a class="sourceLine" id="cb4-14" title="14"></a>
+<a class="sourceLine" id="cb4-15" title="15">dif.p &lt;-<span class="st"> </span><span class="fl">0.2</span> </a>
+<a class="sourceLine" id="cb4-16" title="16">es &lt;-<span class="st"> </span><span class="fl">0.1</span></a>
+<a class="sourceLine" id="cb4-17" title="17"></a>
+<a class="sourceLine" id="cb4-18" title="18"><span class="co"># Generating mechanism 1</span></a>
+<a class="sourceLine" id="cb4-19" title="19"><span class="cf">for</span>(k <span class="cf">in</span> <span class="dv">1</span><span class="op">:</span>K) {</a>
+<a class="sourceLine" id="cb4-20" title="20">    </a>
+<a class="sourceLine" id="cb4-21" title="21">    ind.ak &lt;-<span class="st"> </span><span class="kw">sample</span>(ind<span class="fl">.0</span>, <span class="kw">round</span>(<span class="kw">sum</span>(G)<span class="op">*</span>dif.p))</a>
+<a class="sourceLine" id="cb4-22" title="22">    ind.dk &lt;-<span class="st"> </span><span class="kw">sample</span>(ind<span class="fl">.1</span>, <span class="kw">round</span>(<span class="kw">sum</span>(G)<span class="op">*</span>dif.p))</a>
+<a class="sourceLine" id="cb4-23" title="23">    ind.sm &lt;-<span class="st"> </span><span class="kw">setdiff</span>(ind<span class="fl">.1</span>,ind.dk)</a>
+<a class="sourceLine" id="cb4-24" title="24">    G.ak &lt;-<span class="st"> </span>G.dk &lt;-<span class="st"> </span>G.sm &lt;-<span class="st"> </span><span class="kw">matrix</span>(<span class="dv">0</span>,p,p)</a>
+<a class="sourceLine" id="cb4-25" title="25">    G.ak[ind.ak] &lt;-<span class="st"> </span><span class="dv">1</span></a>
+<a class="sourceLine" id="cb4-26" title="26">    G.dk[ind.dk] &lt;-<span class="st"> </span><span class="dv">1</span></a>
+<a class="sourceLine" id="cb4-27" title="27">    G.sm[ind.sm] &lt;-<span class="st"> </span><span class="dv">1</span></a>
 <a class="sourceLine" id="cb4-28" title="28">    </a>
-<a class="sourceLine" id="cb4-29" title="29">    temp.ak &lt;-<span class="st"> </span>G.ak <span class="op">*</span><span class="st"> </span><span class="kw">matrix</span>(<span class="kw">runif</span>(p <span class="op">*</span><span class="st"> </span>p, <span class="fl">0.5</span>, <span class="dv">1</span>) <span class="op">*</span><span class="st"> </span><span class="kw">sample</span>(<span class="kw">c</span>(<span class="op">-</span><span class="dv">1</span>, <span class="dv">1</span>), p <span class="op">*</span><span class="st"> </span>p, <span class="dt">replace =</span> <span class="ot">TRUE</span>), p, p)</a>
-<a class="sourceLine" id="cb4-30" title="30">    temp.dk &lt;-<span class="st"> </span>G.dk <span class="op">*</span><span class="st"> </span>temp</a>
-<a class="sourceLine" id="cb4-31" title="31">    temp.sm &lt;-<span class="st"> </span>G.sm <span class="op">*</span><span class="st"> </span><span class="kw">matrix</span>(<span class="kw">runif</span>(p <span class="op">*</span><span class="st"> </span>p, <span class="dv">0</span>, es) <span class="op">*</span><span class="st"> </span><span class="kw">sample</span>(<span class="kw">c</span>(<span class="op">-</span><span class="dv">1</span>, <span class="dv">1</span>),p <span class="op">*</span><span class="st"> </span>p,<span class="dt">replace =</span> <span class="ot">TRUE</span>), p, p)</a>
-<a class="sourceLine" id="cb4-32" title="32">    temp.k &lt;-<span class="st"> </span>temp <span class="op">+</span><span class="st"> </span><span class="kw">t</span>(temp) <span class="op">-</span><span class="st"> </span>temp.dk <span class="op">-</span><span class="st"> </span><span class="kw">t</span>(temp.dk) <span class="op">+</span><span class="st"> </span>temp.ak <span class="op">+</span><span class="st"> </span><span class="kw">t</span>(temp.ak) <span class="op">+</span><span class="st"> </span>temp.sm <span class="op">+</span><span class="st"> </span><span class="kw">t</span>(temp.sm) <span class="op">+</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb4-33" title="33"><span class="st">      </span><span class="kw">diag</span>(<span class="kw">rowSums</span>(G <span class="op">+</span><span class="st"> </span><span class="kw">t</span>(G) <span class="op">+</span><span class="st"> </span>G.ak <span class="op">+</span><span class="st"> </span><span class="kw">t</span>(G.ak) <span class="op">-</span><span class="st"> </span>G.dk <span class="op">-</span><span class="st"> </span><span class="kw">t</span>(G.dk)) <span class="op">/</span><span class="st"> </span><span class="dv">2</span>)</a>
-<a class="sourceLine" id="cb4-34" title="34">  }</a>
-<a class="sourceLine" id="cb4-35" title="35">  Omegas.true[, , k] &lt;-<span class="st"> </span><span class="kw">diag</span>(<span class="kw">diag</span>(temp.k)<span class="op">^-</span><span class="fl">0.5</span>) <span class="op">%*%</span><span class="st"> </span>temp.k <span class="op">%*%</span><span class="st"> </span><span class="kw">diag</span>(<span class="kw">diag</span>(temp.k)<span class="op">^-</span><span class="fl">0.5</span>)</a>
-<a class="sourceLine" id="cb4-36" title="36">  </a>
-<a class="sourceLine" id="cb4-37" title="37">  Gk[,,k] &lt;-<span class="st"> </span>G <span class="op">+</span><span class="st"> </span>G.ak <span class="op">-</span>G.dk</a>
-<a class="sourceLine" id="cb4-38" title="38">  </a>
-<a class="sourceLine" id="cb4-39" title="39">  <span class="kw">cat</span>(k,<span class="st">&quot;is done </span><span class="ch">\n</span><span class="st">&quot;</span>)</a>
-<a class="sourceLine" id="cb4-40" title="40">}</a></code></pre></div>
+<a class="sourceLine" id="cb4-29" title="29">    temp.k =<span class="st"> </span><span class="kw">matrix</span>(<span class="dv">0</span>,p,p)</a>
+<a class="sourceLine" id="cb4-30" title="30">    <span class="cf">while</span>(<span class="kw">any</span>(<span class="kw">eigen</span>(temp.k)<span class="op">$</span>values <span class="op">&lt;=</span><span class="st"> </span><span class="dv">0</span>)) {</a>
+<a class="sourceLine" id="cb4-31" title="31">        </a>
+<a class="sourceLine" id="cb4-32" title="32">        temp.ak &lt;-<span class="st"> </span>G.ak<span class="op">*</span><span class="kw">matrix</span>(<span class="kw">runif</span>(p<span class="op">*</span>p,<span class="fl">0.5</span>,<span class="dv">1</span>)<span class="op">*</span><span class="kw">sample</span>(<span class="kw">c</span>(<span class="op">-</span><span class="dv">1</span>,<span class="dv">1</span>),p<span class="op">*</span>p,<span class="dt">replace=</span><span class="ot">TRUE</span>),p,p)</a>
+<a class="sourceLine" id="cb4-33" title="33">        temp.dk &lt;-<span class="st"> </span>G.dk<span class="op">*</span>temp</a>
+<a class="sourceLine" id="cb4-34" title="34">        temp.sm &lt;-<span class="st"> </span>G.sm<span class="op">*</span><span class="kw">matrix</span>(<span class="kw">runif</span>(p<span class="op">*</span>p,<span class="dv">0</span>,es)<span class="op">*</span><span class="kw">sample</span>(<span class="kw">c</span>(<span class="op">-</span><span class="dv">1</span>,<span class="dv">1</span>),p<span class="op">*</span>p,<span class="dt">replace=</span><span class="ot">TRUE</span>),p,p)</a>
+<a class="sourceLine" id="cb4-35" title="35">        temp.k &lt;-<span class="st"> </span>temp <span class="op">+</span><span class="st"> </span><span class="kw">t</span>(temp) <span class="op">-</span><span class="st"> </span>temp.dk <span class="op">-</span><span class="st"> </span><span class="kw">t</span>(temp.dk) <span class="op">+</span><span class="st"> </span>temp.ak <span class="op">+</span><span class="st"> </span><span class="kw">t</span>(temp.ak) <span class="op">+</span><span class="st"> </span>temp.sm <span class="op">+</span><span class="st"> </span><span class="kw">t</span>(temp.sm) <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb4-36" title="36"><span class="st">            </span><span class="kw">diag</span>(<span class="kw">rowSums</span>(G<span class="op">+</span><span class="kw">t</span>(G)<span class="op">+</span>G.ak<span class="op">+</span><span class="kw">t</span>(G.ak)<span class="op">-</span>G.dk<span class="op">-</span><span class="kw">t</span>(G.dk))<span class="op">/</span><span class="dv">2</span>)</a>
+<a class="sourceLine" id="cb4-37" title="37">    }</a>
+<a class="sourceLine" id="cb4-38" title="38">    Omegas.true[,,k] &lt;-<span class="st"> </span><span class="kw">diag</span>(<span class="kw">diag</span>(temp.k)<span class="op">^-</span><span class="fl">0.5</span>) <span class="op">%*%</span><span class="st"> </span>temp.k <span class="op">%*%</span><span class="st"> </span><span class="kw">diag</span>(<span class="kw">diag</span>(temp.k)<span class="op">^-</span><span class="fl">0.5</span>)</a>
+<a class="sourceLine" id="cb4-39" title="39">    </a>
+<a class="sourceLine" id="cb4-40" title="40">    Gk[,,k] &lt;-<span class="st"> </span>G <span class="op">+</span><span class="st"> </span>G.ak <span class="op">-</span>G.dk</a>
+<a class="sourceLine" id="cb4-41" title="41">    </a>
+<a class="sourceLine" id="cb4-42" title="42">    <span class="kw">cat</span>(k,<span class="st">&quot;is done </span><span class="ch">\n</span><span class="st">&quot;</span>)</a>
+<a class="sourceLine" id="cb4-43" title="43">}</a></code></pre></div>
 <pre><code>## 1 is done 
 ## 2 is done 
 ## 3 is done 
@@ -1799,187 +1803,130 @@ div.tocify {
 <div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb6-1" title="1">G.true &lt;-<span class="st"> </span>G</a>
 <a class="sourceLine" id="cb6-2" title="2">Gk.true &lt;-<span class="st"> </span>Gk</a>
 <a class="sourceLine" id="cb6-3" title="3"></a>
-<a class="sourceLine" id="cb6-4" title="4">n &lt;-<span class="st"> </span><span class="dv">50</span></a>
+<a class="sourceLine" id="cb6-4" title="4"></a>
 <a class="sourceLine" id="cb6-5" title="5"></a>
-<a class="sourceLine" id="cb6-6" title="6">sim.dat &lt;-<span class="st"> </span><span class="kw">rep</span>(<span class="kw">list</span>(<span class="ot">NA</span>),K)</a>
-<a class="sourceLine" id="cb6-7" title="7"><span class="cf">for</span>(k <span class="cf">in</span> <span class="dv">1</span><span class="op">:</span>K) {</a>
-<a class="sourceLine" id="cb6-8" title="8">  sim.dat[[k]] &lt;-<span class="st"> </span><span class="kw">matrix</span>(<span class="kw">rnorm</span>(n <span class="op">*</span><span class="st"> </span>p), n, p) <span class="op">%*%</span><span class="st"> </span><span class="kw">chol</span>(<span class="kw">solve</span>(Omegas.true[, , k]))</a>
-<a class="sourceLine" id="cb6-9" title="9">}</a></code></pre></div>
+<a class="sourceLine" id="cb6-6" title="6">n &lt;-<span class="st"> </span><span class="dv">50</span></a>
+<a class="sourceLine" id="cb6-7" title="7"></a>
+<a class="sourceLine" id="cb6-8" title="8">sim.dat &lt;-<span class="st"> </span><span class="kw">rep</span>(<span class="kw">list</span>(<span class="ot">NA</span>),K)</a>
+<a class="sourceLine" id="cb6-9" title="9"><span class="cf">for</span>(k <span class="cf">in</span> <span class="dv">1</span><span class="op">:</span>K) sim.dat[[k]] &lt;-<span class="st"> </span><span class="kw">matrix</span>(<span class="kw">rnorm</span>(n<span class="op">*</span>p),n,p) <span class="op">%*%</span><span class="st"> </span><span class="kw">chol</span>(<span class="kw">solve</span>(Omegas.true[,,k]))</a></code></pre></div>
 </div>
 <div id="analysis" class="section level2 tabset tabset-fade">
 <h2>Analysis</h2>
 <p>We now select the optimal sets of tuning parameters using BIC and a modified BIC and analyze our simulated data set.</p>
-<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" title="1"><span class="co"># Parameters to tune: lambda1, lambda2, and lambda3</span></a>
-<a class="sourceLine" id="cb7-2" title="2">lam2.cand &lt;-<span class="st"> </span><span class="dv">100</span></a>
-<a class="sourceLine" id="cb7-3" title="3">lam3.cand &lt;-<span class="st"> </span><span class="fl">0.0001</span></a>
-<a class="sourceLine" id="cb7-4" title="4">lam1.cand &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="fl">0.0002</span>,<span class="fl">0.0006</span>,<span class="fl">0.0008</span>,<span class="kw">seq</span>(<span class="fl">0.001</span>,<span class="fl">0.006</span>,<span class="dt">by=</span><span class="fl">0.001</span>),<span class="fl">0.008</span>,<span class="fl">0.01</span>,<span class="fl">0.015</span>,<span class="fl">0.02</span>)</a>
-<a class="sourceLine" id="cb7-5" title="5">lams.cand &lt;-<span class="st"> </span><span class="kw">expand.grid</span>(lam1.cand,lam2.cand,lam3.cand)</a>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" title="1"><span class="co"># parameters to tune: lambda1, lambda2, and lambda3</span></a>
+<a class="sourceLine" id="cb7-2" title="2">lam2.cand =<span class="st"> </span><span class="dv">100</span> ; lam3.cand =<span class="st"> </span><span class="fl">0.0001</span></a>
+<a class="sourceLine" id="cb7-3" title="3">    lam1.cand =<span class="st"> </span><span class="kw">c</span>(<span class="fl">0.0002</span>,<span class="fl">0.0006</span>,<span class="fl">0.0008</span>,<span class="kw">seq</span>(<span class="fl">0.001</span>,<span class="fl">0.006</span>,<span class="dt">by=</span><span class="fl">0.001</span>),<span class="fl">0.008</span>,<span class="fl">0.01</span>,<span class="fl">0.015</span>,<span class="fl">0.02</span>)</a>
+<a class="sourceLine" id="cb7-4" title="4">lams.cand &lt;-<span class="st"> </span><span class="kw">expand.grid</span>(lam1.cand,lam2.cand,lam3.cand)</a>
+<a class="sourceLine" id="cb7-5" title="5"></a>
 <a class="sourceLine" id="cb7-6" title="6"></a>
-<a class="sourceLine" id="cb7-7" title="7">lam2.cand &lt;-<span class="st"> </span><span class="dv">70</span></a>
-<a class="sourceLine" id="cb7-8" title="8">lam3.cand &lt;-<span class="st"> </span><span class="fl">0.0001</span></a>
-<a class="sourceLine" id="cb7-9" title="9">lam1.cand &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="fl">0.0002</span>,<span class="fl">0.0006</span>,<span class="fl">0.0008</span>,<span class="kw">seq</span>(<span class="fl">0.001</span>,<span class="fl">0.006</span>,<span class="dt">by=</span><span class="fl">0.001</span>),<span class="fl">0.008</span>,<span class="fl">0.01</span>,<span class="fl">0.015</span>,<span class="fl">0.02</span>)</a>
-<a class="sourceLine" id="cb7-10" title="10">lams.cand &lt;-<span class="st"> </span><span class="kw">rbind</span>(lams.cand,<span class="kw">expand.grid</span>(lam1.cand,lam2.cand,lam3.cand))</a>
+<a class="sourceLine" id="cb7-7" title="7">lam2.cand =<span class="st"> </span><span class="dv">70</span> ; lam3.cand =<span class="st"> </span><span class="fl">0.0001</span></a>
+<a class="sourceLine" id="cb7-8" title="8">    lam1.cand =<span class="st"> </span><span class="kw">c</span>(<span class="fl">0.0002</span>,<span class="fl">0.0006</span>,<span class="fl">0.0008</span>,<span class="kw">seq</span>(<span class="fl">0.001</span>,<span class="fl">0.006</span>,<span class="dt">by=</span><span class="fl">0.001</span>),<span class="fl">0.008</span>,<span class="fl">0.01</span>,<span class="fl">0.015</span>,<span class="fl">0.02</span>)</a>
+<a class="sourceLine" id="cb7-9" title="9">lams.cand &lt;-<span class="st"> </span><span class="kw">rbind</span>(lams.cand,<span class="kw">expand.grid</span>(lam1.cand,lam2.cand,lam3.cand))</a>
+<a class="sourceLine" id="cb7-10" title="10"></a>
 <a class="sourceLine" id="cb7-11" title="11"></a>
-<a class="sourceLine" id="cb7-12" title="12">lam2.cand &lt;-<span class="st"> </span><span class="dv">40</span></a>
-<a class="sourceLine" id="cb7-13" title="13">lam3.cand &lt;-<span class="st"> </span><span class="fl">0.001</span></a>
-<a class="sourceLine" id="cb7-14" title="14">lam1.cand &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="fl">0.0002</span>,<span class="fl">0.0006</span>,<span class="fl">0.0008</span>,<span class="kw">seq</span>(<span class="fl">0.001</span>,<span class="fl">0.006</span>,<span class="dt">by=</span><span class="fl">0.001</span>),<span class="fl">0.008</span>,<span class="fl">0.01</span>,<span class="fl">0.015</span>,<span class="fl">0.02</span>)</a>
-<a class="sourceLine" id="cb7-15" title="15">lams.cand &lt;-<span class="st"> </span><span class="kw">rbind</span>(lams.cand,<span class="kw">expand.grid</span>(lam1.cand,lam2.cand,lam3.cand))</a>
+<a class="sourceLine" id="cb7-12" title="12">lam2.cand =<span class="st"> </span><span class="dv">40</span> ; lam3.cand =<span class="st"> </span><span class="fl">0.001</span></a>
+<a class="sourceLine" id="cb7-13" title="13">    lam1.cand =<span class="st"> </span><span class="kw">c</span>(<span class="fl">0.0002</span>,<span class="fl">0.0006</span>,<span class="fl">0.0008</span>,<span class="kw">seq</span>(<span class="fl">0.001</span>,<span class="fl">0.006</span>,<span class="dt">by=</span><span class="fl">0.001</span>),<span class="fl">0.008</span>,<span class="fl">0.01</span>,<span class="fl">0.015</span>,<span class="fl">0.02</span>)</a>
+<a class="sourceLine" id="cb7-14" title="14">lams.cand &lt;-<span class="st"> </span><span class="kw">rbind</span>(lams.cand,<span class="kw">expand.grid</span>(lam1.cand,lam2.cand,lam3.cand))</a>
+<a class="sourceLine" id="cb7-15" title="15"></a>
 <a class="sourceLine" id="cb7-16" title="16"></a>
 <a class="sourceLine" id="cb7-17" title="17"><span class="kw">colnames</span>(lams.cand) &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&#39;lam1&#39;</span>,<span class="st">&#39;lam2&#39;</span>,<span class="st">&#39;lam3&#39;</span>)</a>
 <a class="sourceLine" id="cb7-18" title="18">nlams &lt;-<span class="st"> </span><span class="kw">nrow</span>(lams.cand)</a>
 <a class="sourceLine" id="cb7-19" title="19"></a>
-<a class="sourceLine" id="cb7-20" title="20">x &lt;-<span class="st"> </span>sim.dat</a>
-<a class="sourceLine" id="cb7-21" title="21"></a>
-<a class="sourceLine" id="cb7-22" title="22">K &lt;-<span class="st"> </span><span class="kw">length</span>(x)</a>
-<a class="sourceLine" id="cb7-23" title="23">p &lt;-<span class="st"> </span><span class="kw">ncol</span>(x[[<span class="dv">1</span>]])</a>
+<a class="sourceLine" id="cb7-20" title="20"></a>
+<a class="sourceLine" id="cb7-21" title="21">x &lt;-<span class="st"> </span>sim.dat</a>
+<a class="sourceLine" id="cb7-22" title="22"></a>
+<a class="sourceLine" id="cb7-23" title="23">K =<span class="st"> </span><span class="kw">length</span>(x); p =<span class="st"> </span><span class="kw">ncol</span>(x[[<span class="dv">1</span>]])</a>
 <a class="sourceLine" id="cb7-24" title="24"></a>
-<a class="sourceLine" id="cb7-25" title="25">uptri.mat0 &lt;-<span class="st"> </span><span class="kw">diag</span>(<span class="dv">0</span>,p)</a>
-<a class="sourceLine" id="cb7-26" title="26">uptri.mat0[<span class="kw">upper.tri</span>(<span class="kw">diag</span>(p))] &lt;-<span class="st"> </span><span class="dv">1</span></a>
-<a class="sourceLine" id="cb7-27" title="27">uptri.matk &lt;-<span class="st"> </span><span class="kw">array</span>(uptri.mat0,<span class="kw">c</span>(p, p, K))</a>
+<a class="sourceLine" id="cb7-25" title="25">uptri.mat0 &lt;-<span class="st"> </span><span class="kw">diag</span>(<span class="dv">0</span>,p); uptri.mat0[<span class="kw">upper.tri</span>(<span class="kw">diag</span>(p))] &lt;-<span class="st"> </span><span class="dv">1</span></a>
+<a class="sourceLine" id="cb7-26" title="26">uptri.matk &lt;-<span class="st"> </span><span class="kw">array</span>(uptri.mat0,<span class="kw">c</span>(p,p,K))</a>
+<a class="sourceLine" id="cb7-27" title="27"></a>
 <a class="sourceLine" id="cb7-28" title="28"></a>
-<a class="sourceLine" id="cb7-29" title="29">Omega0.est &lt;-<span class="st"> </span><span class="kw">array</span>(<span class="ot">NA</span>,<span class="kw">c</span>(p, p, nlams))</a>
-<a class="sourceLine" id="cb7-30" title="30">Omegas.est &lt;-<span class="st"> </span><span class="kw">array</span>(<span class="ot">NA</span>,<span class="kw">c</span>(p, p, K, nlams))</a>
-<a class="sourceLine" id="cb7-31" title="31">bic.rc &lt;-<span class="st"> </span>mbic.rc &lt;-<span class="st"> </span><span class="kw">array</span>(<span class="ot">NA</span>, nlams)</a>
+<a class="sourceLine" id="cb7-29" title="29">Omega0.est &lt;-<span class="st"> </span><span class="kw">array</span>(<span class="ot">NA</span>,<span class="kw">c</span>(p,p,nlams))</a>
+<a class="sourceLine" id="cb7-30" title="30">Omegas.est &lt;-<span class="st"> </span><span class="kw">array</span>(<span class="ot">NA</span>,<span class="kw">c</span>(p,p,K,nlams))</a>
+<a class="sourceLine" id="cb7-31" title="31">bic.rc &lt;-<span class="st"> </span>mbic.rc&lt;-<span class="st"> </span><span class="kw">array</span>(<span class="ot">NA</span>,nlams)</a>
 <a class="sourceLine" id="cb7-32" title="32"></a>
-<a class="sourceLine" id="cb7-33" title="33"><span class="cf">for</span>(j <span class="cf">in</span> <span class="dv">1</span><span class="op">:</span>nlams) {</a>
-<a class="sourceLine" id="cb7-34" title="34">  <span class="co"># Regularizing parameters</span></a>
-<a class="sourceLine" id="cb7-35" title="35">  lam1 &lt;-<span class="st"> </span>lams.cand[j, <span class="dv">1</span>] <span class="op">*</span><span class="st"> </span>(<span class="dv">1</span> <span class="op">+</span><span class="st"> </span>lams.cand[j, <span class="dv">2</span>])</a>
-<a class="sourceLine" id="cb7-36" title="36">  lam2 &lt;-<span class="st"> </span>lams.cand[j, <span class="dv">2</span>] <span class="op">*</span><span class="st"> </span>K</a>
-<a class="sourceLine" id="cb7-37" title="37">  lam3 &lt;-<span class="st"> </span>lams.cand[j, <span class="dv">3</span>]</a>
-<a class="sourceLine" id="cb7-38" title="38">  </a>
-<a class="sourceLine" id="cb7-39" title="39">  <span class="co"># Estimation</span></a>
-<a class="sourceLine" id="cb7-40" title="40">  est &lt;-<span class="st"> </span><span class="kw">randCov</span>(x, lam1, lam2, lam3, <span class="dt">delta =</span> <span class="fl">0.0001</span>)</a>
-<a class="sourceLine" id="cb7-41" title="41">  </a>
-<a class="sourceLine" id="cb7-42" title="42">  Omega0 &lt;-<span class="st"> </span>est<span class="op">$</span>Omega0</a>
-<a class="sourceLine" id="cb7-43" title="43">  Omegas &lt;-<span class="st"> </span>est<span class="op">$</span>Omegas</a>
-<a class="sourceLine" id="cb7-44" title="44">  </a>
-<a class="sourceLine" id="cb7-45" title="45">  Omega0.est[ , , j] &lt;-<span class="st"> </span>Omega0</a>
-<a class="sourceLine" id="cb7-46" title="46">  Omegas.est[ , , , j] &lt;-<span class="st"> </span>Omegas</a>
-<a class="sourceLine" id="cb7-47" title="47">  </a>
-<a class="sourceLine" id="cb7-48" title="48">  <span class="co"># Calculate BIC</span></a>
-<a class="sourceLine" id="cb7-49" title="49">  bic.rc[j] &lt;-<span class="st"> </span><span class="kw">bic_cal</span>(x, Omegas)</a>
-<a class="sourceLine" id="cb7-50" title="50">  mbic.rc[j] &lt;-<span class="st"> </span><span class="kw">mbic_cal</span>(x, Omega0, Omegas, lams.cand[j, <span class="dv">2</span>])</a>
-<a class="sourceLine" id="cb7-51" title="51">  </a>
-<a class="sourceLine" id="cb7-52" title="52">  <span class="co"># Keep track</span></a>
-<a class="sourceLine" id="cb7-53" title="53">  <span class="cf">if</span>(j <span class="op">&lt;</span><span class="st"> </span>nlams <span class="op">&amp;</span><span class="st"> </span>lams.cand[j <span class="op">+</span><span class="st"> </span><span class="dv">1</span>, <span class="dv">2</span>] <span class="op">!=</span><span class="st"> </span>lams.cand[j, <span class="dv">2</span>]) {</a>
-<a class="sourceLine" id="cb7-54" title="54">    <span class="kw">cat</span>(<span class="st">&#39;lam2 =&#39;</span>, lams.cand[j, <span class="dv">2</span>],<span class="st">&#39;is done </span><span class="ch">\n</span><span class="st">&#39;</span>)</a>
-<a class="sourceLine" id="cb7-55" title="55">  }</a>
-<a class="sourceLine" id="cb7-56" title="56">  }  <span class="co"># end of loop for all lambdas</span></a></code></pre></div>
-<pre><code>## Failed to converge for lambda1 = 0.0202 , lambda2 = 800 , lambda3 = 1e-04 delta0 = 0.0009444596 , deltaK = 0.0009514488Failed to converge for lambda1 = 0.0606 , lambda2 = 800 , lambda3 = 1e-04 delta0 = 0.001061096 , deltaK = 0.001074268Failed to converge for lambda1 = 0.0808 , lambda2 = 800 , lambda3 = 1e-04 delta0 = 0.0009688184 , deltaK = 0.0009740129Failed to converge for lambda1 = 0.101 , lambda2 = 800 , lambda3 = 1e-04 delta0 = 0.0009913009 , deltaK = 0.0009964897Failed to converge for lambda1 = 0.202 , lambda2 = 800 , lambda3 = 1e-04 delta0 = 0.001195042 , deltaK = 0.001201697Failed to converge for lambda1 = 0.303 , lambda2 = 800 , lambda3 = 1e-04 delta0 = 0.001318796 , deltaK = 0.001324246Failed to converge for lambda1 = 0.404 , lambda2 = 800 , lambda3 = 1e-04 delta0 = 0.001318678 , deltaK = 0.001322893Failed to converge for lambda1 = 0.505 , lambda2 = 800 , lambda3 = 1e-04 delta0 = 0.001317007 , deltaK = 0.00132338Failed to converge for lambda1 = 0.606 , lambda2 = 800 , lambda3 = 1e-04 delta0 = 0.001316208 , deltaK = 0.001322861Failed to converge for lambda1 = 0.808 , lambda2 = 800 , lambda3 = 1e-04 delta0 = 0.001394183 , deltaK = 0.001400082Failed to converge for lambda1 = 1.01 , lambda2 = 800 , lambda3 = 1e-04 delta0 = 0.001472538 , deltaK = 0.001478266Failed to converge for lambda1 = 1.515 , lambda2 = 800 , lambda3 = 1e-04 delta0 = 0.001529649 , deltaK = 0.0015346Failed to converge for lambda1 = 2.02 , lambda2 = 800 , lambda3 = 1e-04 delta0 = 0.001495722 , deltaK = 0.001499868lam2 = 100 is done 
-## Failed to converge for lambda1 = 0.0142 , lambda2 = 560 , lambda3 = 1e-04 delta0 = 0.0006723927 , deltaK = 0.0006778298Failed to converge for lambda1 = 0.0426 , lambda2 = 560 , lambda3 = 1e-04 delta0 = 0.0007815365 , deltaK = 0.0007865485Failed to converge for lambda1 = 0.0568 , lambda2 = 560 , lambda3 = 1e-04 delta0 = 0.0008011076 , deltaK = 0.000807968Failed to converge for lambda1 = 0.071 , lambda2 = 560 , lambda3 = 1e-04 delta0 = 0.000742526 , deltaK = 0.0007474275Failed to converge for lambda1 = 0.142 , lambda2 = 560 , lambda3 = 1e-04 delta0 = 0.0008740639 , deltaK = 0.0008818515Failed to converge for lambda1 = 0.213 , lambda2 = 560 , lambda3 = 1e-04 delta0 = 0.0009888855 , deltaK = 0.000995302Failed to converge for lambda1 = 0.284 , lambda2 = 560 , lambda3 = 1e-04 delta0 = 0.001032311 , deltaK = 0.001037329Failed to converge for lambda1 = 0.355 , lambda2 = 560 , lambda3 = 1e-04 delta0 = 0.001014985 , deltaK = 0.001022754Failed to converge for lambda1 = 0.426 , lambda2 = 560 , lambda3 = 1e-04 delta0 = 0.001018338 , deltaK = 0.001025573Failed to converge for lambda1 = 0.568 , lambda2 = 560 , lambda3 = 1e-04 delta0 = 0.001021531 , deltaK = 0.001027985Failed to converge for lambda1 = 0.71 , lambda2 = 560 , lambda3 = 1e-04 delta0 = 0.001097595 , deltaK = 0.001104025Failed to converge for lambda1 = 1.065 , lambda2 = 560 , lambda3 = 1e-04 delta0 = 0.001179043 , deltaK = 0.001184885Failed to converge for lambda1 = 1.42 , lambda2 = 560 , lambda3 = 1e-04 delta0 = 0.001181199 , deltaK = 0.001186271lam2 = 70 is done 
-## Failed to converge for lambda1 = 0.0082 , lambda2 = 320 , lambda3 = 0.001 delta0 = 0.0003747718 , deltaK = 0.0003877296Failed to converge for lambda1 = 0.0246 , lambda2 = 320 , lambda3 = 0.001 delta0 = 0.000350949 , deltaK = 0.0003598745Failed to converge for lambda1 = 0.0328 , lambda2 = 320 , lambda3 = 0.001 delta0 = 0.0003630737 , deltaK = 0.0003718532Failed to converge for lambda1 = 0.041 , lambda2 = 320 , lambda3 = 0.001 delta0 = 0.0003806916 , deltaK = 0.0003889387Failed to converge for lambda1 = 0.082 , lambda2 = 320 , lambda3 = 0.001 delta0 = 0.0004358659 , deltaK = 0.0004442902Failed to converge for lambda1 = 0.123 , lambda2 = 320 , lambda3 = 0.001 delta0 = 0.0004832709 , deltaK = 0.0004901906Failed to converge for lambda1 = 0.164 , lambda2 = 320 , lambda3 = 0.001 delta0 = 0.0005116652 , deltaK = 0.0005185043Failed to converge for lambda1 = 0.205 , lambda2 = 320 , lambda3 = 0.001 delta0 = 0.0005193219 , deltaK = 0.0005256922Failed to converge for lambda1 = 0.246 , lambda2 = 320 , lambda3 = 0.001 delta0 = 0.000513588 , deltaK = 0.0005193627Failed to converge for lambda1 = 0.328 , lambda2 = 320 , lambda3 = 0.001 delta0 = 0.0005159773 , deltaK = 0.0005234791Failed to converge for lambda1 = 0.41 , lambda2 = 320 , lambda3 = 0.001 delta0 = 0.0005046486 , deltaK = 0.0005109051Failed to converge for lambda1 = 0.615 , lambda2 = 320 , lambda3 = 0.001 delta0 = 0.0005663624 , deltaK = 0.000572526Failed to converge for lambda1 = 0.82 , lambda2 = 320 , lambda3 = 0.001 delta0 = 0.0005913152 , deltaK = 0.0005970473</code></pre>
-<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb9-1" title="1"><span class="co"># Optimal results for BIC</span></a>
-<a class="sourceLine" id="cb9-2" title="2">Omega0.bic &lt;-<span class="st"> </span>Omega0.est[ , , <span class="kw">which.min</span>(bic.rc)]</a>
-<a class="sourceLine" id="cb9-3" title="3">Omegas.bic &lt;-<span class="st"> </span>Omegas.est[ , , , <span class="kw">which.min</span>(bic.rc)]</a>
-<a class="sourceLine" id="cb9-4" title="4"></a>
-<a class="sourceLine" id="cb9-5" title="5"><span class="co"># Optimal results for modified BIC</span></a>
-<a class="sourceLine" id="cb9-6" title="6">Omega0.mbic &lt;-<span class="st"> </span>Omega0.est[ , , <span class="kw">which.min</span>(mbic.rc)]</a>
-<a class="sourceLine" id="cb9-7" title="7">Omegas.mbic &lt;-<span class="st"> </span>Omegas.est[ , , , <span class="kw">which.min</span>(mbic.rc)]</a></code></pre></div>
-</div>
-<div id="results" class="section level2 tabset tabset-fade">
-<h2>Results</h2>
-<p>We summarize the performance of the RCM using both tuning parameter selection approaches. For evaluating performance in terms of edge detection we calculate the true positive rate (TPR) and false positive rate (FPR) for the subject-level networks, subscripted with <span class="math inline">\(k\)</span>, and cluster-level network, subscripted with <span class="math inline">\(g\)</span>.</p>
-<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb10-1" title="1"><span class="co"># Function for summarizing edge detection performances</span></a>
-<a class="sourceLine" id="cb10-2" title="2">performanceSummary &lt;-<span class="st"> </span><span class="cf">function</span>(Omegaks, Omegags, <span class="dt">Omega0ks =</span> Omegas.true, <span class="dt">Omega0g =</span> Omega0.true) {</a>
-<a class="sourceLine" id="cb10-3" title="3"></a>
-<a class="sourceLine" id="cb10-4" title="4"><span class="co"># Rounding</span></a>
-<a class="sourceLine" id="cb10-5" title="5">Omegaks &lt;-<span class="st"> </span><span class="kw">round</span>(Omegaks, <span class="dv">3</span>)</a>
-<a class="sourceLine" id="cb10-6" title="6">Omegags &lt;-<span class="st"> </span><span class="kw">round</span>(Omegags, <span class="dv">3</span>)</a>
-<a class="sourceLine" id="cb10-7" title="7"></a>
-<a class="sourceLine" id="cb10-8" title="8">Gk.true &lt;-<span class="st"> </span>(<span class="kw">round</span>(Omega0ks, <span class="dv">3</span>) <span class="op">!=</span><span class="st"> </span><span class="dv">0</span>) <span class="op">-</span><span class="st"> </span><span class="kw">array</span>(<span class="kw">diag</span>(p), <span class="kw">c</span>(p, p, K))</a>
-<a class="sourceLine" id="cb10-9" title="9">Gk.rc &lt;-<span class="st"> </span>(<span class="kw">round</span>(Omegaks, <span class="dv">3</span>) <span class="op">!=</span><span class="st"> </span><span class="dv">0</span>) <span class="op">-</span><span class="st"> </span><span class="kw">array</span>(<span class="kw">diag</span>(p), <span class="kw">c</span>(p, p, K))</a>
-<a class="sourceLine" id="cb10-10" title="10">G.true &lt;-<span class="st"> </span>(<span class="kw">round</span>(Omega0g, <span class="dv">3</span>) <span class="op">!=</span><span class="st"> </span><span class="dv">0</span>) <span class="op">-</span><span class="st"> </span><span class="kw">diag</span>(p)</a>
-<a class="sourceLine" id="cb10-11" title="11">G0.rc &lt;-<span class="st"> </span>(<span class="kw">round</span>(Omegags, <span class="dv">3</span>) <span class="op">!=</span><span class="st"> </span><span class="dv">0</span>) <span class="op">-</span><span class="st"> </span><span class="kw">diag</span>(p)</a>
-<a class="sourceLine" id="cb10-12" title="12"></a>
-<a class="sourceLine" id="cb10-13" title="13">uptri.mat0 &lt;-<span class="st"> </span><span class="kw">diag</span>(<span class="dv">0</span>, p) </a>
-<a class="sourceLine" id="cb10-14" title="14">uptri.mat0[<span class="kw">upper.tri</span>(<span class="kw">diag</span>(p))] &lt;-<span class="st"> </span><span class="dv">1</span></a>
-<a class="sourceLine" id="cb10-15" title="15">uptri.matk &lt;-<span class="st"> </span><span class="kw">array</span>(uptri.mat0, <span class="kw">c</span>(p, p, K))</a>
-<a class="sourceLine" id="cb10-16" title="16"></a>
-<a class="sourceLine" id="cb10-17" title="17">TPRk &lt;-<span class="st"> </span><span class="kw">sum</span>(Gk.rc <span class="op">*</span><span class="st"> </span>uptri.matk <span class="op">&amp;</span><span class="st"> </span>Gk.true <span class="op">*</span><span class="st"> </span>uptri.matk) <span class="op">/</span><span class="st"> </span><span class="kw">sum</span>(Gk.true <span class="op">*</span><span class="st"> </span>uptri.matk)</a>
-<a class="sourceLine" id="cb10-18" title="18">FPRk &lt;-<span class="st"> </span><span class="kw">sum</span>(Gk.rc <span class="op">*</span><span class="st"> </span>uptri.matk <span class="op">&amp;</span><span class="st"> </span>(uptri.matk <span class="op">-</span><span class="st"> </span>Gk.true <span class="op">*</span><span class="st"> </span>uptri.matk)) <span class="op">/</span><span class="st"> </span><span class="kw">sum</span>(uptri.matk <span class="op">-</span><span class="st"> </span>Gk.true <span class="op">*</span><span class="st"> </span>uptri.matk)</a>
-<a class="sourceLine" id="cb10-19" title="19">TPRg &lt;-<span class="st"> </span><span class="kw">sum</span>(G0.rc <span class="op">*</span><span class="st"> </span>uptri.mat0 <span class="op">&amp;</span><span class="st"> </span>G.true <span class="op">*</span><span class="st"> </span>uptri.mat0) <span class="op">/</span><span class="st"> </span><span class="kw">sum</span>(G.true <span class="op">*</span><span class="st"> </span>uptri.mat0)</a>
-<a class="sourceLine" id="cb10-20" title="20">FPRg &lt;-<span class="st"> </span><span class="kw">sum</span>(G0.rc <span class="op">*</span><span class="st"> </span>uptri.mat0 <span class="op">&amp;</span><span class="st"> </span>(uptri.mat0 <span class="op">-</span><span class="st"> </span>G.true <span class="op">*</span><span class="st"> </span>uptri.mat0) ) <span class="op">/</span><span class="kw">sum</span>(uptri.mat0 <span class="op">-</span><span class="st"> </span>G.true <span class="op">*</span><span class="st"> </span>uptri.mat0)</a>
-<a class="sourceLine" id="cb10-21" title="21"></a>
-<a class="sourceLine" id="cb10-22" title="22"><span class="kw">return</span>(<span class="kw">data.frame</span>(<span class="dt">TPRk =</span> TPRk, <span class="dt">FPRk =</span> FPRk, <span class="dt">TPRg =</span> TPRg, <span class="dt">FPRg =</span> FPRg))</a>
-<a class="sourceLine" id="cb10-23" title="23">}</a></code></pre></div>
-<div id="bic" class="section level3">
-<h3>BIC</h3>
-<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb11-1" title="1"><span class="kw">performanceSummary</span>(<span class="dt">Omegaks =</span> Omegas.bic, <span class="dt">Omegag =</span> Omega0.bic) <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb11-2" title="2"><span class="st">  </span>knitr<span class="op">::</span><span class="kw">kable</span>(<span class="dt">digits =</span> <span class="dv">3</span>, <span class="dt">row.names =</span> F) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">kable_styling</span>(<span class="dt">bootstrap_options =</span> <span class="kw">c</span>(<span class="st">&quot;hover&quot;</span>, <span class="st">&quot;responsive&quot;</span>))</a></code></pre></div>
-<table class="table table-hover table-responsive" style="margin-left: auto; margin-right: auto;">
-<thead>
-<tr>
-<th style="text-align:right;">
-TPRk
-</th>
-<th style="text-align:right;">
-FPRk
-</th>
-<th style="text-align:right;">
-TPRg
-</th>
-<th style="text-align:right;">
-FPRg
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:right;">
-0.677
-</td>
-<td style="text-align:right;">
-0.005
-</td>
-<td style="text-align:right;">
-0.697
-</td>
-<td style="text-align:right;">
-0.001
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-<div id="modified-bic" class="section level3">
-<h3>Modified BIC</h3>
-<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb12-1" title="1"><span class="kw">performanceSummary</span>(<span class="dt">Omegaks =</span> Omegas.mbic, <span class="dt">Omegag =</span> Omega0.mbic) <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb12-2" title="2"><span class="st">  </span>knitr<span class="op">::</span><span class="kw">kable</span>(<span class="dt">digits =</span> <span class="dv">3</span>, <span class="dt">row.names =</span> F) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">kable_styling</span>(<span class="dt">bootstrap_options =</span> <span class="kw">c</span>(<span class="st">&quot;hover&quot;</span>, <span class="st">&quot;responsive&quot;</span>))</a></code></pre></div>
-<table class="table table-hover table-responsive" style="margin-left: auto; margin-right: auto;">
-<thead>
-<tr>
-<th style="text-align:right;">
-TPRk
-</th>
-<th style="text-align:right;">
-FPRk
-</th>
-<th style="text-align:right;">
-TPRg
-</th>
-<th style="text-align:right;">
-FPRg
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:right;">
-0.941
-</td>
-<td style="text-align:right;">
-0.056
-</td>
-<td style="text-align:right;">
-0.99
-</td>
-<td style="text-align:right;">
-0.022
-</td>
-</tr>
-</tbody>
-</table>
-</div>
+<a class="sourceLine" id="cb7-33" title="33"></a>
+<a class="sourceLine" id="cb7-34" title="34"><span class="cf">for</span>(j <span class="cf">in</span> <span class="dv">1</span><span class="op">:</span>nlams) {</a>
+<a class="sourceLine" id="cb7-35" title="35"></a>
+<a class="sourceLine" id="cb7-36" title="36">    <span class="co"># regularizing parameters</span></a>
+<a class="sourceLine" id="cb7-37" title="37">    lam1 &lt;-<span class="st"> </span>lams.cand[j,<span class="dv">1</span>]<span class="op">*</span>(<span class="dv">1</span><span class="op">+</span>lams.cand[j,<span class="dv">2</span>])</a>
+<a class="sourceLine" id="cb7-38" title="38">    lam2 &lt;-<span class="st"> </span>lams.cand[j,<span class="dv">2</span>]<span class="op">*</span>K;</a>
+<a class="sourceLine" id="cb7-39" title="39">    lam3 &lt;-<span class="st"> </span>lams.cand[j,<span class="dv">3</span>]</a>
+<a class="sourceLine" id="cb7-40" title="40"></a>
+<a class="sourceLine" id="cb7-41" title="41">    <span class="co"># estimation</span></a>
+<a class="sourceLine" id="cb7-42" title="42">    est &lt;-<span class="st"> </span>rcm<span class="op">::</span><span class="kw">randCov</span>(x,lam1,lam2,lam3)</a>
+<a class="sourceLine" id="cb7-43" title="43">    Omega0 &lt;-<span class="st"> </span>est<span class="op">$</span>Omega0</a>
+<a class="sourceLine" id="cb7-44" title="44">    Omegas &lt;-<span class="st"> </span>est<span class="op">$</span>Omegas</a>
+<a class="sourceLine" id="cb7-45" title="45"></a>
+<a class="sourceLine" id="cb7-46" title="46">    Omega0.est[,,j] &lt;-<span class="st"> </span>Omega0</a>
+<a class="sourceLine" id="cb7-47" title="47">    Omegas.est[,,,j] &lt;-<span class="st"> </span>Omegas</a>
+<a class="sourceLine" id="cb7-48" title="48"></a>
+<a class="sourceLine" id="cb7-49" title="49">    <span class="co"># calculate BIC</span></a>
+<a class="sourceLine" id="cb7-50" title="50">    bic.rc[j] &lt;-<span class="st"> </span>rcm<span class="op">::</span><span class="kw">bic_cal</span>(x,Omegas)</a>
+<a class="sourceLine" id="cb7-51" title="51">    mbic.rc[j] &lt;-<span class="st"> </span>rcm<span class="op">::</span><span class="kw">mbic_cal</span>(x,Omega0,Omegas,lams.cand[j,<span class="dv">2</span>])</a>
+<a class="sourceLine" id="cb7-52" title="52"></a>
+<a class="sourceLine" id="cb7-53" title="53">    <span class="co"># keep track</span></a>
+<a class="sourceLine" id="cb7-54" title="54">    <span class="cf">if</span>(j <span class="op">&lt;</span><span class="st"> </span>nlams <span class="op">&amp;</span><span class="st"> </span>lams.cand[j<span class="op">+</span><span class="dv">1</span>,<span class="dv">2</span>] <span class="op">!=</span><span class="st"> </span>lams.cand[j,<span class="dv">2</span>]) <span class="kw">cat</span>(<span class="st">&#39;lam2 =&#39;</span>,lams.cand[j,<span class="dv">2</span>],<span class="st">&#39;is done </span><span class="ch">\n</span><span class="st">&#39;</span>)</a>
+<a class="sourceLine" id="cb7-55" title="55"></a>
+<a class="sourceLine" id="cb7-56" title="56"></a>
+<a class="sourceLine" id="cb7-57" title="57">}  <span class="co"># end of loop for all lambdas</span></a></code></pre></div>
+<pre><code>## Omegas fail to converge for lam1 = 2e-04 lam2 = 100 lam3 = 1e-04 
+## Omegas fail to converge for lam1 = 6e-04 lam2 = 100 lam3 = 1e-04 
+## Omegas fail to converge for lam1 = 8e-04 lam2 = 100 lam3 = 1e-04 
+## Omegas fail to converge for lam1 = 0.001 lam2 = 100 lam3 = 1e-04 
+## Omegas fail to converge for lam1 = 0.002 lam2 = 100 lam3 = 1e-04 
+## Omegas fail to converge for lam1 = 0.003 lam2 = 100 lam3 = 1e-04 
+## Omegas fail to converge for lam1 = 0.004 lam2 = 100 lam3 = 1e-04 
+## Omegas fail to converge for lam1 = 0.005 lam2 = 100 lam3 = 1e-04 
+## Omegas fail to converge for lam1 = 0.006 lam2 = 100 lam3 = 1e-04 
+## Omegas fail to converge for lam1 = 0.008 lam2 = 100 lam3 = 1e-04 
+## Omegas fail to converge for lam1 = 0.01 lam2 = 100 lam3 = 1e-04 
+## Omegas fail to converge for lam1 = 0.015 lam2 = 100 lam3 = 1e-04 
+## Omegas fail to converge for lam1 = 0.02 lam2 = 100 lam3 = 1e-04 
+## lam2 = 100 is done 
+## Omegas fail to converge for lam1 = 2e-04 lam2 = 70 lam3 = 1e-04 
+## Omegas fail to converge for lam1 = 6e-04 lam2 = 70 lam3 = 1e-04 
+## Omegas fail to converge for lam1 = 8e-04 lam2 = 70 lam3 = 1e-04 
+## Omegas fail to converge for lam1 = 0.001 lam2 = 70 lam3 = 1e-04 
+## Omegas fail to converge for lam1 = 0.002 lam2 = 70 lam3 = 1e-04 
+## Omegas fail to converge for lam1 = 0.003 lam2 = 70 lam3 = 1e-04 
+## Omegas fail to converge for lam1 = 0.004 lam2 = 70 lam3 = 1e-04 
+## Omegas fail to converge for lam1 = 0.005 lam2 = 70 lam3 = 1e-04 
+## Omegas fail to converge for lam1 = 0.006 lam2 = 70 lam3 = 1e-04 
+## Omegas fail to converge for lam1 = 0.008 lam2 = 70 lam3 = 1e-04 
+## Omegas fail to converge for lam1 = 0.01 lam2 = 70 lam3 = 1e-04 
+## Omegas fail to converge for lam1 = 0.015 lam2 = 70 lam3 = 1e-04 
+## Omegas fail to converge for lam1 = 0.02 lam2 = 70 lam3 = 1e-04 
+## lam2 = 70 is done 
+## Omegas fail to converge for lam1 = 2e-04 lam2 = 40 lam3 = 0.001 
+## Omegas fail to converge for lam1 = 6e-04 lam2 = 40 lam3 = 0.001 
+## Omegas fail to converge for lam1 = 8e-04 lam2 = 40 lam3 = 0.001 
+## Omegas fail to converge for lam1 = 0.001 lam2 = 40 lam3 = 0.001 
+## Omegas fail to converge for lam1 = 0.002 lam2 = 40 lam3 = 0.001 
+## Omegas fail to converge for lam1 = 0.003 lam2 = 40 lam3 = 0.001 
+## Omegas fail to converge for lam1 = 0.004 lam2 = 40 lam3 = 0.001 
+## Omegas fail to converge for lam1 = 0.005 lam2 = 40 lam3 = 0.001 
+## Omegas fail to converge for lam1 = 0.006 lam2 = 40 lam3 = 0.001 
+## Omegas fail to converge for lam1 = 0.008 lam2 = 40 lam3 = 0.001 
+## Omegas fail to converge for lam1 = 0.01 lam2 = 40 lam3 = 0.001 
+## Omegas fail to converge for lam1 = 0.015 lam2 = 40 lam3 = 0.001 
+## Omegas fail to converge for lam1 = 0.02 lam2 = 40 lam3 = 0.001</code></pre>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb9-1" title="1">Omega0.rc &lt;-<span class="st"> </span>Omega0.est[,,<span class="kw">which.min</span>(mbic.rc)]</a>
+<a class="sourceLine" id="cb9-2" title="2">Omegas.rc &lt;-<span class="st"> </span>Omegas.est[,,,<span class="kw">which.min</span>(mbic.rc)]</a>
+<a class="sourceLine" id="cb9-3" title="3"></a>
+<a class="sourceLine" id="cb9-4" title="4">Gk.rc &lt;-<span class="st"> </span>(<span class="kw">round</span>(Omegas.rc,<span class="dv">3</span>) <span class="op">!=</span><span class="st"> </span><span class="dv">0</span>) <span class="op">-</span><span class="st"> </span><span class="kw">array</span>(<span class="kw">diag</span>(p),<span class="kw">c</span>(p,p,K))</a>
+<a class="sourceLine" id="cb9-5" title="5">G0.rc &lt;-<span class="st"> </span>(<span class="kw">round</span>(Omega0.rc,<span class="dv">3</span>) <span class="op">!=</span><span class="st"> </span><span class="dv">0</span>) <span class="op">-</span><span class="st"> </span><span class="kw">diag</span>(p)</a>
+<a class="sourceLine" id="cb9-6" title="6"></a>
+<a class="sourceLine" id="cb9-7" title="7">uptri.mat0 &lt;-<span class="st"> </span><span class="kw">diag</span>(<span class="dv">0</span>,p); uptri.mat0[<span class="kw">upper.tri</span>(<span class="kw">diag</span>(p))] &lt;-<span class="st"> </span><span class="dv">1</span></a>
+<a class="sourceLine" id="cb9-8" title="8">uptri.matk &lt;-<span class="st"> </span><span class="kw">array</span>(uptri.mat0,<span class="kw">c</span>(p,p,K))</a>
+<a class="sourceLine" id="cb9-9" title="9"></a>
+<a class="sourceLine" id="cb9-10" title="10">TPRk &lt;-<span class="st"> </span><span class="kw">sum</span>( Gk.rc<span class="op">*</span>uptri.matk <span class="op">&amp;</span><span class="st"> </span>Gk.true ) <span class="op">/</span><span class="st"> </span><span class="kw">sum</span>(Gk.true)</a>
+<a class="sourceLine" id="cb9-11" title="11">FPRk &lt;-<span class="st"> </span><span class="kw">sum</span>( Gk.rc<span class="op">*</span>uptri.matk <span class="op">&amp;</span><span class="st"> </span>(uptri.matk<span class="op">-</span>Gk.true) ) <span class="op">/</span><span class="st"> </span><span class="kw">sum</span>(uptri.matk<span class="op">-</span>Gk.true)</a>
+<a class="sourceLine" id="cb9-12" title="12">TPRg &lt;-<span class="st"> </span><span class="kw">sum</span>( G0.rc<span class="op">*</span>uptri.mat0 <span class="op">&amp;</span><span class="st"> </span>G.true ) <span class="op">/</span><span class="st"> </span><span class="kw">sum</span>(G.true)</a>
+<a class="sourceLine" id="cb9-13" title="13">FPRg &lt;-<span class="st"> </span><span class="kw">sum</span>( G0.rc<span class="op">*</span>uptri.mat0 <span class="op">&amp;</span><span class="st"> </span>(uptri.mat0<span class="op">-</span>G.true) ) <span class="op">/</span><span class="kw">sum</span>(uptri.mat0<span class="op">-</span>G.true)</a>
+<a class="sourceLine" id="cb9-14" title="14"></a>
+<a class="sourceLine" id="cb9-15" title="15"><span class="kw">print</span>(<span class="kw">c</span>(TPRk,FPRk,TPRg,FPRg))</a></code></pre></div>
+<pre><code>## [1] 0.94065657 0.05612245 0.98989899 0.02205731</code></pre>
 </div>
 
 
