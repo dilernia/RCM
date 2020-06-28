@@ -4,8 +4,7 @@
 \alias{randCov}
 \title{Random Covariance Model}
 \usage{
-randCov(x, lambda1, lambda2, lambda3 = 0, delta = 0.001,
-  max.iters = 100)
+randCov(x, lambda1, lambda2, lambda3 = 0)
 }
 \arguments{
 \item{x}{List of \eqn{K} data matrices each of dimension \eqn{n_k} x \eqn{p}.}
@@ -15,10 +14,6 @@ randCov(x, lambda1, lambda2, lambda3 = 0, delta = 0.001,
 \item{lambda2}{Non-negative scalar. Induces similarity between subject-level matrices and group-level matrix.}
 
 \item{lambda3}{Non-negative scalar. Induces sparsity in group-level matrix.}
-
-\item{delta}{Threshold for convergence.}
-
-\item{max.iters}{Maximum number of iterations for block coordinate descent optimization.}
 }
 \value{
 A list of length 2 containing:

@@ -1716,7 +1716,7 @@ div.tocify {
 <h2>Simulating Data</h2>
 <p>We simulate an example data set for <span class="math inline">\(K=8\)</span> total subjects. For each subject, we generate <span class="math inline">\(n=50\)</span> observations for <span class="math inline">\(p=100\)</span> variables with approximately <span class="math inline">\(\rho = 20\%\)</span> of network connections differing from their shared group-level network.</p>
 <div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" title="1"><span class="co"># Generate individual variants with rho=0.2 and errors [-0.1,0.1] for common edges</span></a>
-<a class="sourceLine" id="cb2-2" title="2"><span class="kw">set.seed</span>(<span class="dv">1999</span>)</a>
+<a class="sourceLine" id="cb2-2" title="2"><span class="kw">set.seed</span>(<span class="dv">123456</span>)</a>
 <a class="sourceLine" id="cb2-3" title="3"><span class="kw">rm</span>(<span class="dt">list =</span> <span class="kw">ls</span>())</a>
 <a class="sourceLine" id="cb2-4" title="4"></a>
 <a class="sourceLine" id="cb2-5" title="5">p &lt;-<span class="st"> </span><span class="dv">100</span></a>
@@ -1848,7 +1848,7 @@ div.tocify {
 <a class="sourceLine" id="cb7-37" title="37">  lam3 &lt;-<span class="st"> </span>lams.cand[j, <span class="dv">3</span>]</a>
 <a class="sourceLine" id="cb7-38" title="38">  </a>
 <a class="sourceLine" id="cb7-39" title="39">  <span class="co"># Estimation</span></a>
-<a class="sourceLine" id="cb7-40" title="40">  est &lt;-<span class="st"> </span><span class="kw">randCov</span>(x, lam1, lam2, lam3)</a>
+<a class="sourceLine" id="cb7-40" title="40">  est &lt;-<span class="st"> </span><span class="kw">randCov</span>(x, lam1, lam2, lam3, <span class="dt">delta =</span> <span class="fl">0.0001</span>)</a>
 <a class="sourceLine" id="cb7-41" title="41">  </a>
 <a class="sourceLine" id="cb7-42" title="42">  Omega0 &lt;-<span class="st"> </span>est<span class="op">$</span>Omega0</a>
 <a class="sourceLine" id="cb7-43" title="43">  Omegas &lt;-<span class="st"> </span>est<span class="op">$</span>Omegas</a>
@@ -1865,8 +1865,9 @@ div.tocify {
 <a class="sourceLine" id="cb7-54" title="54">    <span class="kw">cat</span>(<span class="st">&#39;lam2 =&#39;</span>, lams.cand[j, <span class="dv">2</span>],<span class="st">&#39;is done </span><span class="ch">\n</span><span class="st">&#39;</span>)</a>
 <a class="sourceLine" id="cb7-55" title="55">  }</a>
 <a class="sourceLine" id="cb7-56" title="56">  }  <span class="co"># end of loop for all lambdas</span></a></code></pre></div>
-<pre><code>## Failed to converge for lambda1 = 0.202 , lambda2 = 800 , lambda3 = 1e-04 delta0 = 0.001289708 , deltaK = 0.00129296Failed to converge for lambda1 = 0.303 , lambda2 = 800 , lambda3 = 1e-04 delta0 = 0.001444297 , deltaK = 0.001448523Failed to converge for lambda1 = 0.404 , lambda2 = 800 , lambda3 = 1e-04 delta0 = 0.00139495 , deltaK = 0.001398272Failed to converge for lambda1 = 0.505 , lambda2 = 800 , lambda3 = 1e-04 delta0 = 0.001223098 , deltaK = 0.001229977Failed to converge for lambda1 = 0.606 , lambda2 = 800 , lambda3 = 1e-04 delta0 = 0.001199898 , deltaK = 0.001204004Failed to converge for lambda1 = 0.808 , lambda2 = 800 , lambda3 = 1e-04 delta0 = 0.001315876 , deltaK = 0.001321878Failed to converge for lambda1 = 1.01 , lambda2 = 800 , lambda3 = 1e-04 delta0 = 0.00139612 , deltaK = 0.001401987Failed to converge for lambda1 = 1.515 , lambda2 = 800 , lambda3 = 1e-04 delta0 = 0.001463039 , deltaK = 0.001468178Failed to converge for lambda1 = 2.02 , lambda2 = 800 , lambda3 = 1e-04 delta0 = 0.001439652 , deltaK = 0.001443995lam2 = 100 is done 
-## Failed to converge for lambda1 = 0.213 , lambda2 = 560 , lambda3 = 1e-04 delta0 = 0.001084997 , deltaK = 0.001088683Failed to converge for lambda1 = 0.284 , lambda2 = 560 , lambda3 = 1e-04 delta0 = 0.001112608 , deltaK = 0.001117157Failed to converge for lambda1 = 0.355 , lambda2 = 560 , lambda3 = 1e-04 delta0 = 0.001058434 , deltaK = 0.001063522Failed to converge for lambda1 = 0.71 , lambda2 = 560 , lambda3 = 1e-04 delta0 = 0.001036959 , deltaK = 0.001043521Failed to converge for lambda1 = 1.065 , lambda2 = 560 , lambda3 = 1e-04 delta0 = 0.001123407 , deltaK = 0.001129444Failed to converge for lambda1 = 1.42 , lambda2 = 560 , lambda3 = 1e-04 delta0 = 0.001132608 , deltaK = 0.001137898lam2 = 70 is done</code></pre>
+<pre><code>## Failed to converge for lambda1 = 0.0202 , lambda2 = 800 , lambda3 = 1e-04 delta0 = 0.0009444596 , deltaK = 0.0009514488Failed to converge for lambda1 = 0.0606 , lambda2 = 800 , lambda3 = 1e-04 delta0 = 0.001061096 , deltaK = 0.001074268Failed to converge for lambda1 = 0.0808 , lambda2 = 800 , lambda3 = 1e-04 delta0 = 0.0009688184 , deltaK = 0.0009740129Failed to converge for lambda1 = 0.101 , lambda2 = 800 , lambda3 = 1e-04 delta0 = 0.0009913009 , deltaK = 0.0009964897Failed to converge for lambda1 = 0.202 , lambda2 = 800 , lambda3 = 1e-04 delta0 = 0.001195042 , deltaK = 0.001201697Failed to converge for lambda1 = 0.303 , lambda2 = 800 , lambda3 = 1e-04 delta0 = 0.001318796 , deltaK = 0.001324246Failed to converge for lambda1 = 0.404 , lambda2 = 800 , lambda3 = 1e-04 delta0 = 0.001318678 , deltaK = 0.001322893Failed to converge for lambda1 = 0.505 , lambda2 = 800 , lambda3 = 1e-04 delta0 = 0.001317007 , deltaK = 0.00132338Failed to converge for lambda1 = 0.606 , lambda2 = 800 , lambda3 = 1e-04 delta0 = 0.001316208 , deltaK = 0.001322861Failed to converge for lambda1 = 0.808 , lambda2 = 800 , lambda3 = 1e-04 delta0 = 0.001394183 , deltaK = 0.001400082Failed to converge for lambda1 = 1.01 , lambda2 = 800 , lambda3 = 1e-04 delta0 = 0.001472538 , deltaK = 0.001478266Failed to converge for lambda1 = 1.515 , lambda2 = 800 , lambda3 = 1e-04 delta0 = 0.001529649 , deltaK = 0.0015346Failed to converge for lambda1 = 2.02 , lambda2 = 800 , lambda3 = 1e-04 delta0 = 0.001495722 , deltaK = 0.001499868lam2 = 100 is done 
+## Failed to converge for lambda1 = 0.0142 , lambda2 = 560 , lambda3 = 1e-04 delta0 = 0.0006723927 , deltaK = 0.0006778298Failed to converge for lambda1 = 0.0426 , lambda2 = 560 , lambda3 = 1e-04 delta0 = 0.0007815365 , deltaK = 0.0007865485Failed to converge for lambda1 = 0.0568 , lambda2 = 560 , lambda3 = 1e-04 delta0 = 0.0008011076 , deltaK = 0.000807968Failed to converge for lambda1 = 0.071 , lambda2 = 560 , lambda3 = 1e-04 delta0 = 0.000742526 , deltaK = 0.0007474275Failed to converge for lambda1 = 0.142 , lambda2 = 560 , lambda3 = 1e-04 delta0 = 0.0008740639 , deltaK = 0.0008818515Failed to converge for lambda1 = 0.213 , lambda2 = 560 , lambda3 = 1e-04 delta0 = 0.0009888855 , deltaK = 0.000995302Failed to converge for lambda1 = 0.284 , lambda2 = 560 , lambda3 = 1e-04 delta0 = 0.001032311 , deltaK = 0.001037329Failed to converge for lambda1 = 0.355 , lambda2 = 560 , lambda3 = 1e-04 delta0 = 0.001014985 , deltaK = 0.001022754Failed to converge for lambda1 = 0.426 , lambda2 = 560 , lambda3 = 1e-04 delta0 = 0.001018338 , deltaK = 0.001025573Failed to converge for lambda1 = 0.568 , lambda2 = 560 , lambda3 = 1e-04 delta0 = 0.001021531 , deltaK = 0.001027985Failed to converge for lambda1 = 0.71 , lambda2 = 560 , lambda3 = 1e-04 delta0 = 0.001097595 , deltaK = 0.001104025Failed to converge for lambda1 = 1.065 , lambda2 = 560 , lambda3 = 1e-04 delta0 = 0.001179043 , deltaK = 0.001184885Failed to converge for lambda1 = 1.42 , lambda2 = 560 , lambda3 = 1e-04 delta0 = 0.001181199 , deltaK = 0.001186271lam2 = 70 is done 
+## Failed to converge for lambda1 = 0.0082 , lambda2 = 320 , lambda3 = 0.001 delta0 = 0.0003747718 , deltaK = 0.0003877296Failed to converge for lambda1 = 0.0246 , lambda2 = 320 , lambda3 = 0.001 delta0 = 0.000350949 , deltaK = 0.0003598745Failed to converge for lambda1 = 0.0328 , lambda2 = 320 , lambda3 = 0.001 delta0 = 0.0003630737 , deltaK = 0.0003718532Failed to converge for lambda1 = 0.041 , lambda2 = 320 , lambda3 = 0.001 delta0 = 0.0003806916 , deltaK = 0.0003889387Failed to converge for lambda1 = 0.082 , lambda2 = 320 , lambda3 = 0.001 delta0 = 0.0004358659 , deltaK = 0.0004442902Failed to converge for lambda1 = 0.123 , lambda2 = 320 , lambda3 = 0.001 delta0 = 0.0004832709 , deltaK = 0.0004901906Failed to converge for lambda1 = 0.164 , lambda2 = 320 , lambda3 = 0.001 delta0 = 0.0005116652 , deltaK = 0.0005185043Failed to converge for lambda1 = 0.205 , lambda2 = 320 , lambda3 = 0.001 delta0 = 0.0005193219 , deltaK = 0.0005256922Failed to converge for lambda1 = 0.246 , lambda2 = 320 , lambda3 = 0.001 delta0 = 0.000513588 , deltaK = 0.0005193627Failed to converge for lambda1 = 0.328 , lambda2 = 320 , lambda3 = 0.001 delta0 = 0.0005159773 , deltaK = 0.0005234791Failed to converge for lambda1 = 0.41 , lambda2 = 320 , lambda3 = 0.001 delta0 = 0.0005046486 , deltaK = 0.0005109051Failed to converge for lambda1 = 0.615 , lambda2 = 320 , lambda3 = 0.001 delta0 = 0.0005663624 , deltaK = 0.000572526Failed to converge for lambda1 = 0.82 , lambda2 = 320 , lambda3 = 0.001 delta0 = 0.0005913152 , deltaK = 0.0005970473</code></pre>
 <div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb9-1" title="1"><span class="co"># Optimal results for BIC</span></a>
 <a class="sourceLine" id="cb9-2" title="2">Omega0.bic &lt;-<span class="st"> </span>Omega0.est[ , , <span class="kw">which.min</span>(bic.rc)]</a>
 <a class="sourceLine" id="cb9-3" title="3">Omegas.bic &lt;-<span class="st"> </span>Omegas.est[ , , , <span class="kw">which.min</span>(bic.rc)]</a>
@@ -1925,16 +1926,16 @@ FPRg
 <tbody>
 <tr>
 <td style="text-align:right;">
-0.794
+0.677
 </td>
 <td style="text-align:right;">
-0.007
+0.005
 </td>
 <td style="text-align:right;">
-0.838
+0.697
 </td>
 <td style="text-align:right;">
-0
+0.001
 </td>
 </tr>
 </tbody>
@@ -1964,16 +1965,16 @@ FPRg
 <tbody>
 <tr>
 <td style="text-align:right;">
-0.949
+0.941
 </td>
 <td style="text-align:right;">
-0.05
+0.056
 </td>
 <td style="text-align:right;">
 0.99
 </td>
 <td style="text-align:right;">
-0.016
+0.022
 </td>
 </tr>
 </tbody>

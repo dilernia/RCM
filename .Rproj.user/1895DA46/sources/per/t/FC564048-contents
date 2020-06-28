@@ -38,7 +38,7 @@ We simulate an example data set for $K=8$ total subjects. For each subject, we g
 
 ```{r}
 # Generate individual variants with rho=0.2 and errors [-0.1,0.1] for common edges
-set.seed(1999)
+set.seed(123456)
 rm(list = ls())
 
 p <- 100
@@ -166,7 +166,7 @@ for(j in 1:nlams) {
   lam3 <- lams.cand[j, 3]
   
   # Estimation
-  est <- randCov(x, lam1, lam2, lam3)
+  est <- randCov(x, lam1, lam2, lam3, delta = 0.0001)
   
   Omega0 <- est$Omega0
   Omegas <- est$Omegas

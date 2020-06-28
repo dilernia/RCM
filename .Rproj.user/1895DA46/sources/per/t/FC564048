@@ -5,16 +5,16 @@
     "dirty" : false,
     "encoding" : "UTF-8",
     "folds" : "",
-    "hash" : "1066780749",
+    "hash" : "1223924684",
     "id" : "FC564048",
-    "lastKnownWriteTime" : 1593212769,
-    "last_content_update" : 1593212769363,
+    "lastKnownWriteTime" : 1593297338,
+    "last_content_update" : 1593297338459,
     "path" : "C:/Users/Owner/Dropbox/Minnesota/fMRI Research/rcm/docs/exampleSimulationRCM.Rmd",
     "project_path" : "docs/exampleSimulationRCM.Rmd",
     "properties" : {
-        "cursorPosition" : "42,0",
+        "cursorPosition" : "168,52",
         "last_setup_crc32" : "",
-        "scrollLine" : "22"
+        "scrollLine" : "0"
     },
     "read_only" : false,
     "read_only_alternatives" : [

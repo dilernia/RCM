@@ -1,0 +1,25 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1593357338594.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "22|55|84|0|\n100|54|158|0|\n",
+    "hash" : "868544996",
+    "id" : "17CAAFB5",
+    "lastKnownWriteTime" : 1593357977,
+    "last_content_update" : 1593357977802,
+    "path" : "C:/Users/Owner/Dropbox/Minnesota/fMRI Research/rcm/R/randCov.R",
+    "project_path" : "R/randCov.R",
+    "properties" : {
+        "cursorPosition" : "94,54",
+        "scrollLine" : "9"
+    },
+    "read_only" : false,
+    "read_only_alternatives" : [
+    ],
+    "relative_order" : 8,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}

@@ -10,21 +10,19 @@
 #' Lin Zhang
 #'
 #' @export
-bic_cal <- function(x, Omegas, Gk_est = NULL) {
-  nk <- sapply(x, FUN = nrow)
-  S <- lapply(x, FUN = cov)
+bic_cal <- function(x, Omegas, Gk_est=NULL) {
+  #regular BIC
+  nk = sapply(x, nrow)
+  S = sapply(x, cov, simplify="array")
 
-  p <- dim(Omegas)[1]
-  K <- length(x)
+  p = dim(Omegas)[1]
+  K = length(x)
 
-  if(is.null(Gk_est)) {
-    Gk_est <- (round(Omegas,3) != 0) - array(diag(p), c(p, p, K))
-  }
+  if(is.null(Gk_est)) Gk_est = (round(Omegas, 3) != 0) - array(diag(p), c(p, p, K))
+  nedges = apply(Gk_est, 3, sum) / 2
 
-  nedges <- apply(Gk_est, MARGIN = 3, FUN = sum) / 2
-
-  bic <- mapply(FUN = function(x1, x2, x3, x4) {(x1 - 1) * sum(diag(x2 %*% x3)) - x1 * log(det(x3)) + x4 * log(x1)},
-                nk, S, lapply(1:K, FUN = function(k){Omegas[, , k]}), nedges + p)
+  bic <- mapply(function(x1, x2, x3, x4) (x1 - 1) * sum(diag(x2 %*% x3)) - x1 * log(det(x3)) + x4 * log(x1),
+                 nk, plyr::alply(S, 3), plyr::alply(Omegas, 3), nedges + p)
 
   return(sum(bic))
 }
@@ -44,22 +42,23 @@ bic_cal <- function(x, Omegas, Gk_est = NULL) {
 #' Lin Zhang
 #'
 #' @export
-mbic_cal <- function(x, Omega0, Omegas, lambda2, G0_est = NULL, Gk_est = NULL) {
-  nk <- sapply(x, FUN = nrow)
-  S <- lapply(x, FUN = cov)
+mbic_cal <- function(x, Omega0, Omegas, lambda2, G0_est=NULL, Gk_est=NULL) {
+  # modified BIC
+  nk = sapply(x, nrow)
+  S = sapply(x, cov, simplify="array")
 
-  p <- dim(Omegas)[1]
-  K <- length(x)
+  p = dim(Omegas)[1]
+  K = length(x)
 
-  if(is.null(Gk_est)) {Gk_est = (round(Omegas,3) != 0) - array(diag(p),c(p,p,K))}
-  if(is.null(G0_est)) { G0_est = (round(Omega0,3) != 0) - diag(p)}
-  nedges <- apply(Gk_est, MARGIN = 3, FUN = sum) / 2
+  if(is.null(Gk_est)) Gk_est = (round(Omegas, 3) != 0) - array(diag(p), c(p, p, K))
+  if(is.null(G0_est)) G0_est = (round(Omega0, 3) != 0) - diag(p)
+  nedges = apply(Gk_est, 3, sum) / 2
 
+  # tmp = lambda2 / nk
   df.r <- (nedges + p) / (1 + lambda2)
   df.f <- (sum(G0_est) / 2 + p) * lambda2 / (1 + lambda2)
 
-  mbic <- mapply(FUN = function(x1,x2,x3) {(x1-1)*sum(diag(x2%*%x3)) - x1*log(det(x3))},
-                 nk, S, lapply(1:K, FUN = function(k){Omegas[, , k]}))
+  mbic <- mapply(function(x1, x2, x3) (x1 - 1) * sum(diag(x2 %*% x3)) - x1 * log(det(x3)), nk, plyr::alply(S, 3), plyr::alply(Omegas, 3))
 
   return(sum(mbic) + (sum(df.r) + df.f) * log(sum(nk)))
 }
