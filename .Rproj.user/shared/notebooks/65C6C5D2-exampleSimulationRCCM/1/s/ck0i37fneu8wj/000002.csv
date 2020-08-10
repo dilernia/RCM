@@ -1,0 +1,100 @@
+"0","# Install version of package used for Biostatistics submission"
+"0","if(""rccm"" %in% installed.packages() == FALSE) {"
+"0","devtools::install_github(""dilernia/rccm@biostatistics"")"
+"0","}"
+"1","  "
+"1","  "
+"1",""
+"1",""
+"1","  "
+"1","[32m√[39m  [38;5;247mchecking for file 'C:\Users\Owner\AppData\Local\Temp\RtmpaqZPLJ\remotes2d1449eb7c3a\dilernia-rccm-161d372/DESCRIPTION'[39m[36m[36m (402ms)[36m[39m"
+"1",""
+"1","
+"
+"1",""
+"1",""
+"1",""
+"1","  "
+"1","  "
+"1",""
+"1",""
+"1","  "
+"1","[38;5;247m-[39m[38;5;247m  [39m[38;5;247mchecking for LF line-endings in source and make files and shell scripts[39m[36m[39m"
+"1",""
+"1","
+"
+"1","[38;5;247m-[39m[38;5;247m  [39m[38;5;247mchecking for empty or unneeded directories[39m[36m[39m"
+"1",""
+"1","
+"
+"1",""
+"1",""
+"1",""
+"1","  "
+"1","   "
+"1",""
+"1","
+"
+"1",""
+"1",""
+"1",""
+"1","* installing *source* package 'rccm' ...
+"
+"1","** using staged installation
+"
+"1","** R
+"
+"1","** byte-compile and prepare package for lazy loading
+"
+"1","** help
+"
+"1","*** installing help indices
+"
+"1","  converting help for package 'rccm'
+"
+"1","    finding HTML links ... done
+"
+"1","    MatClust                                html  
+"
+"1","    adj                                     html  
+"
+"1","    aicbic                                  html  
+"
+"1","    aicbicm                                 html  
+"
+"1","    bic_cal                                 html  
+"
+"1","    cvTune                                  html  
+"
+"1","    dwishart                                html  
+"
+"1","    randCalc                                html  
+"
+"1","    randCov                                 html  
+"
+"1","    rccSim                                  html  
+"
+"1","    rccm                                    html  
+"
+"1","    starsRccm                               html  
+"
+"1","    zToA                                    html  
+"
+"1","** building package indices
+"
+"1","** testing if installed package can be loaded from temporary location
+"
+"1","*** arch - i386
+"
+"1","*** arch - x64
+"
+"1","*** arch - x64
+"
+"1","** testing if installed package keeps a record of temporary installation path
+"
+"1","* DONE (rccm)
+"
+"0","# Load rcm package"
+"0","library(rccm)"
+"0","library(tidyverse, quietly = T)"
+"0","library(kableExtra, quietly = T)"

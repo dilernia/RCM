@@ -1,0 +1,10 @@
+"0","# Display help file"
+"0","?starsRccm"
+"0",""
+"0","# Grid of tuning parameters to search over"
+"0","                       lambda2 = c(1000, 3000, 5000), lambda3 = 20)"
+"0",""
+"0","# Find optimal tuning parameter set using modified stARS with 10 bootstrap samples"
+"2","Error in data.frame(..., check.names = FALSE) : 
+  arguments imply differing number of rows: 0, 1
+"
